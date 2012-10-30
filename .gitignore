@@ -5,6 +5,13 @@
 *.swp
 bin
 train
+vid
 cmake_install.cmake
 CMakeCache.txt
 CMakeFiles
+*.wmv
+*.flv
+*.avi
+*.mpeg
+*.mpg
+*.mp*
