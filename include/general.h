@@ -11,8 +11,8 @@
 #include <ctime>
 #include <cstdio>
 #include <cstring>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
+#include <sys/types.h>    // System functions
+#include <sys/stat.h>     // System functions
+#include <dirent.h>       // For accessing directory structure
 
 #endif
