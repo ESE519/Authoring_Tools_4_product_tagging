@@ -4,6 +4,8 @@
 *.out
 *.swp
 bin
+build
+lib
 train
 vid
 cmake_install.cmake
