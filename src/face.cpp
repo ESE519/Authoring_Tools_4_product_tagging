@@ -131,7 +131,7 @@ void FaceRecognize::load(string file_name){
   }
 }
 
-void FaceRecognize::recognize_face(vector <string> &name, vector <double> &confidence, vector <int> &label, vector <Point2f> &face_pos, Mat &img, string classifier);{
+void FaceRecognize::recognize_face(vector <string> &name, vector <double> &confidence, vector <int> &label, vector <Rect> &face_pos, Mat &img, string classifier){
   Mat scaled_img;
   int eigen_prediction, fisher_prediction, lbph_prediction, N = face_pos.size();
   double eigen_confidence, fisher_confidence, lbph_confidence; 
@@ -274,23 +274,53 @@ void FaceRecognize::train(string train_file, string class_file){
   return;
 }
 
-void FaceTracker::klt_face_tracker(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, vector < vector <Point2f> > &features, string classifier, string mode){
-  int N = face_pos.size(), num_features;
+void FaceTracker::klt_face_tracker(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features, string classifier, string mode){
+  int N = face_pos.size(), Ni, num_features, displacement_x, displacement_y;
   static int frame_count=0;
-  vector <double> confidence;
+  vector <double> confidence,err;
+  vector <bool> status;
+  vector <Point2f> nfeatures;
+  vector <struct Eye> eye;
   Rect roi;
   if (frame_count == 0){
     detect_face(face_pos, eye, img, 1, mode);
     recognize_face(name, confidence, label, face_pos, img, classifier);
-    num_features = 0;
+    N = face_pos.size();
+    features.clear();
+    features.resize(N);
   }
   for (int i=0; i<N; i++){
+    roi.x = face_pos[i].x - ROI_ALLOWANCE;
+    roi.y = face_pos[i].y - ROI_ALLOWANCE;
+    roi.width = face_pos[i].width + 2*ROI_ALLOWANCE;
+    roi.height = face_pos[i].height + 2*ROI_ALLOWANCE;
+    
+    if (frame_count != 0){
+      status.clear();
+      err.clear();
+      nfeatures.clear();
+      calcOpticalFlowPyrLK(prev_img(roi),img(roi),features[i],nfeatures,status,err);
+      Ni = status.size();
+      displacement_x = 0;
+      displacement_y = 0;
+      for (int j=0; j<Ni; j++){
+        if (status[j]){
+          displacement_x += nfeatures[j].x - features[i][j].x;
+          displacement_y += nfeatures[j].y - features[i][j].y;
+        }
+      }
+      features[i].clear();
+      for (int j=0; j<Ni; j++)
+        if (status[j])
+          features[i].push_back(nfeatures[j]);
+      displacement_x /= features[i].size();
+      displacement_y /= features[i].size();
+      face_pos[i].x += displacement_x;
+      face_pos[i].y += displacement_y;
+    }
     num_features = features[i].size();
     if (num_features < KLT_MIN_FEATURES_PER_FACE){
-      roi.x = face_pos[i].x - ROI_ALLOWANCE;
-      roi.y = face_pos[i].y - ROI_ALLOWANCE;
-      roi.width = face_pos[i].width + 2*ROI_ALLOWANCE;
-      roi.height = face_pos[i].height + 2*ROI_ALLOWANCE;
+      features[i].clear();
       goodFeaturesToTrack(img(roi), features[i], KLT_MAX_FEATURES_PER_FACE, KLT_FEATURE_QUALITY, KLT_MIN_FEATURE_DIST);
     }
   }
