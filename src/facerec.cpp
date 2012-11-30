@@ -22,8 +22,8 @@
 
 #define IMG_SIZE_X 640
 #define IMG_SIZE_Y 480
-#define MIN_FACE_SIZE 40
-#define MAX_FACE_SIZE 150
+#define MIN_FACE_SIZE 50
+#define MAX_FACE_SIZE 300
 #define FACE_SIZE_STEP 20
 #define REC_FACE_SIZE 40
 #define FISHER_THRESH 20
