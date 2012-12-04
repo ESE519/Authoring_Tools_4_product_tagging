@@ -28,7 +28,7 @@
 #define REC_FACE_SIZE 40
 #define FISHER_THRESH 20
 #define EIGEN_THRESH 1400
-#define LBPH_THRESH 45
+#define LBPH_THRESH 70
 
 using namespace std;
 using namespace cv;
@@ -81,7 +81,7 @@ void onTrackbarSlide(int value, void* userData=NULL){
 
 void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
   int bestFaceRadius = -1;
-  Point pt1,pt2,eyeLeft,eyeRight;
+  Point pt1,pt2,center;
   double t = 0;
   vector<Rect> faces;
   const static Scalar colors[] = {CV_RGB(255,0,0),
@@ -253,7 +253,7 @@ int main(int argc, char ** argv){
 	fid1 = fopen(class_filename,"a+");
   char * imgPath;
   Mat frame;
-  String cascadeName = "/home/rajeev/OpenCV-2.4.2/data/haarcascades/haarcascade_frontalface_alt.xml";
+  String cascadeName = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_frontalface_alt.xml";
 	String nestedCascadeName = "/home/rajeev/OpenCV-2.3.1/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 	String vidPath="";
 	double scale = 1;

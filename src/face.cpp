@@ -3,35 +3,28 @@
 
 using namespace face;
 
-VideoCapture cap;
+VideoCapture cap1;
 void onTrackbarSlide(int pos, void* userData=NULL){
-  cap.set(CV_CAP_PROP_POS_FRAMES,pos);
+  cap1.set(CV_CAP_PROP_POS_FRAMES,pos);
 }
 
 void Face::align_face(Mat &out, Mat &img, struct Eye eye, float offset_x, float offset_y, Size sz, string mode){
   // Find Face Parameters
-  cout << " I always fail here. You should have noticed" << endl;
   if (eye.left_radius <=0 && eye.right_radius <= 0){
-    cout << "I dont have eyes" << endl;
     resize(img,out,sz, 0, 0, INTER_LINEAR);  
     return;
   }
   else if (eye.left_radius <= 0 || eye.right_radius <= 0){
-    cout << " I am a single eyed jack" << endl;
     Rect crop;
     Point2f pt1,pt2;
     Mat tmp;
-    cout << img.rows << " " << img.cols << endl;
-    cout << eye.left_pos.x << " " << eye.left_pos.y << endl;
     if (eye.right_radius <= 0){
-      cout << "I have a left eye" << endl;
       pt1.x = max(eye.left_pos.x - (1-offset_x)*img.rows,0);
       pt1.y = max(eye.left_pos.y - offset_y*img.cols,0);
       pt2.x = min(eye.left_pos.x + offset_x*img.rows,img.rows-1);
       pt2.y = min(eye.left_pos.y + (1-offset_y)*img.cols,img.cols-1);
     }
     else{
-      cout << "I have a right eye" << endl;
       pt1.x = max(eye.right_pos.x - offset_x*img.rows,0);
       pt1.y = max(eye.right_pos.y - offset_y*img.cols,0);
       pt2.x = min(eye.right_pos.x + (1-offset_x)*img.rows,img.rows-1);
@@ -41,10 +34,7 @@ void Face::align_face(Mat &out, Mat &img, struct Eye eye, float offset_x, float 
     crop.y = pt1.y;
     crop.width = pt2.x - pt1.x; 
     crop.height = pt2.y - pt1.y;
-    cout <<"I am going to fail now !!! " << endl;
-    cout <<pt1.x << " " << pt2.y << " " <<pt2.x << " " << pt2.y << " [ " << img.rows << " , " << img.cols << " ] " <<endl;
     tmp = img(crop);
-    cout << "I failed ... " << endl;
     resize(tmp,out,sz, 0, 0, INTER_LINEAR);    
   }
   else {
@@ -363,25 +353,17 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
       if (!file)
         cerr << "File Not Found" << endl;
       while (getline(file, line)){
-        cout << line << endl;
         stringstream liness(line);
         getline(liness, path, ';');
         getline(liness, label);
-        cout << path << " " << label << endl;
         img = imread(path, 0);
         int nlabel = atoi(label.c_str());
         if (img.rows > 600 || img.cols > 800){
-          cout << "Here i am " << endl;
           scale = img.rows/480;
-          cout << "I am going to fail" << endl;
           scaled_img.create(cvRound(img.rows/scale),cvRound(img.cols/scale),CV_8UC1);
-          cout << "I am failed ... oh no u cant see that" << endl;
-          cout << " ha ha " << endl;
           resize(img, scaled_img, scaled_img.size(), 0, 0, INTER_LINEAR );
-          cout << "Idiot" << endl;
         }
         else{
-          cout << " Haha fooled u i am here now" << endl;
           scaled_img = img;
         }    
         string num_label = "00000";
@@ -393,25 +375,18 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
         num_label[0] = (face_count[nlabel]/10000) % 10 + '0';
         
         detect_face(face_pos, eye, scaled_img, 1);
-        cout << " I detected " << endl;
         draw_face(face_pos,eye,scaled_img,1);
-        cout << " I drew " << endl ;
         if (face_pos.size() <= 0)
           continue;
-        cout << "I dint continue" << endl;
         //if (eye[0].left_radius == -1 || eye[0].right_radius == -1)
         //  continue;
         recognize_img = scaled_img(face_pos[0]);
-        cout << face_pos[0].x << " " << face_pos[0].y << " " << face_pos[0].x + face_pos[0].width << " " << face_pos[0].y+face_pos[0].height << endl;
-        cout << eye[0].left_pos.x << " " << eye[0].left_pos.y << " "<< eye[0].right_pos.x << " "<< eye[0].right_pos.y<< endl;
-        cout << " Finally I failed here but u cant see" << endl;
         struct Eye teye;
         teye.left_pos.x = eye[0].left_pos.x - face_pos[0].x;
         teye.left_pos.x = eye[0].left_pos.y - face_pos[0].y;
         teye.right_pos.x = eye[0].right_pos.x - face_pos[0].x;
         teye.right_pos.x = eye[0].right_pos.y - face_pos[0].y;
         align_face(nrecognize_img, recognize_img, teye, 0.3, 0.3, Size(FACE_RECOGNIZE_SIZE, FACE_RECOGNIZE_SIZE));
-        cout << " Fooled u again " << endl;
         imshow("detected_img",recognize_img);
         imshow("cropped_img",nrecognize_img);
         if (waitKey(0) == 'y'){
@@ -423,22 +398,22 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
           filepath = "../train/" + face_name[nlabel] + "_resized/" + face_name[nlabel] + num_label + ".jpg";
           fout_resized << filepath <<";"<<nlabel<<endl;
           cout << "Saving resized sample to" + filepath << endl;
-          imwrite(filepath,recognize_img);
-          images.push_back(recognize_img);
+          imwrite(filepath,nrecognize_img);
+          images.push_back(nrecognize_img);
           labels.push_back(nlabel);
           face_count[nlabel]++;
         }
       }
     }
     else{
-      cap.open(train_file);
+      cap1.open(train_file);
       Mat frame,frame_gray;
-      int totalNumFrames = cap.get(CV_CAP_PROP_FRAME_COUNT), pos = 0, skip_count = 0;
+      int totalNumFrames = cap1.get(CV_CAP_PROP_FRAME_COUNT), pos = 0, skip_count = 0;
       bool skip_flag;
       namedWindow("frame",1);
 			createTrackbar("pos","frame",&pos,totalNumFrames,onTrackbarSlide);
       while (1){
-        cap >> frame;
+        cap1 >> frame;
         if (frame.empty())
           break;
         cvtColor(frame,frame_gray,CV_BGR2GRAY);
@@ -475,7 +450,7 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
         setTrackbarPos("pos","frame",pos);
         if(skip_flag==0 && (waitKey(0) == 27 || pos >= totalNumFrames))
           break;
-        cap.set(CV_CAP_PROP_POS_FRAMES,pos);
+        cap1.set(CV_CAP_PROP_POS_FRAMES,pos);
       }
     }
     eigen_recognizer = createEigenFaceRecognizer(80,EIGEN_THRESH);	  
