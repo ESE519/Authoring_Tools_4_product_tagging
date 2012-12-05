@@ -36,9 +36,24 @@ ViosGui::ViosGui(QWidget *parent) :
     ui(new Ui::ViosGui)
 {
     ui->setupUi(this);
+    skip=1;
     connect(ui->browse, SIGNAL(triggered(QAction*)), this, SLOT(changeDirectory()));
+    connect(ui->frame_fwd, SIGNAL(clicked()), this, SLOT(fwd_skip()));
+    connect(ui->frame_prev, SIGNAL(clicked()), this, SLOT(prev_skip()));
+    connect(ui->frame_skip, SIGNAL(textChanged()), this, SLOT(frame_no()));
+    connect(ui->fwd, SIGNAL(clicked()), this, SLOT(one_fwd()));
+    connect(ui->prev, SIGNAL(clicked()), this, SLOT(one_prev()));
     fillList();
-    Mat I = imread("../vios_gui/test.jpg");
+    cap.open("/home/shashidhar/Downloads/bbts03e03.flv");
+    max_frame = cap.get(CV_CAP_PROP_FRAME_COUNT);
+    ImageUpdate();
+    ui->horizontalSlider->setMaximum(max_frame-1);
+}
+void ViosGui::ImageUpdate()
+{
+    cap>>I;
+    current_frame=cap.get(CV_CAP_PROP_POS_FRAMES);
+    ui->horizontalSlider->setValue(current_frame);
     image = Mat2QImage(I);
     scene = new QGraphicsScene();
     ui->graphicsView_frame->setScene(scene);
@@ -48,6 +63,35 @@ ViosGui::ViosGui(QWidget *parent) :
 ViosGui::~ViosGui()
 {
     delete ui;
+}
+
+void ViosGui::one_fwd()
+{
+    cap.set(CV_CAP_PROP_POS_FRAMES,(current_frame+1));
+    ImageUpdate();
+}
+void ViosGui::one_prev()
+{
+    cap.set(CV_CAP_PROP_POS_FRAMES,(current_frame-1));
+    ImageUpdate();
+}
+
+void ViosGui::frame_no()
+{
+    QString txt = ui->frame_skip->toPlainText();
+    skip = txt.toInt();
+}
+
+void ViosGui::fwd_skip()
+{
+    cap.set(CV_CAP_PROP_POS_FRAMES,(current_frame+skip));
+    ImageUpdate();
+}
+
+void ViosGui::prev_skip()
+{
+    cap.set(CV_CAP_PROP_POS_FRAMES,(current_frame-skip));
+    ImageUpdate();
 }
 
 void ViosGui::changeDirectory()
@@ -67,5 +111,3 @@ void ViosGui::fillList()
     ui->listWidget->clear();
     ui->listWidget->addItems(directory.entryList());
 }
-
-

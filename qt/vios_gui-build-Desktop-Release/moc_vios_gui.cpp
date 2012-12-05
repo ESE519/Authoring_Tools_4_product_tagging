@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'vios_gui.h'
 **
-** Created: Wed Dec 5 00:40:12 2012
+** Created: Wed Dec 5 16:20:47 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_ViosGui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -33,12 +33,19 @@ static const uint qt_meta_data_ViosGui[] = {
  // slots: signature, parameters, type, tag, flags
        9,    8,    8,    8, 0x08,
       27,    8,    8,    8, 0x08,
+      38,    8,    8,    8, 0x08,
+      49,    8,    8,    8, 0x08,
+      61,    8,    8,    8, 0x08,
+      72,    8,    8,    8, 0x08,
+      82,    8,    8,    8, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_ViosGui[] = {
     "ViosGui\0\0changeDirectory()\0fillList()\0"
+    "fwd_skip()\0prev_skip()\0frame_no()\0"
+    "one_fwd()\0one_prev()\0"
 };
 
 void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -49,6 +56,11 @@ void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         switch (_id) {
         case 0: _t->changeDirectory(); break;
         case 1: _t->fillList(); break;
+        case 2: _t->fwd_skip(); break;
+        case 3: _t->prev_skip(); break;
+        case 4: _t->frame_no(); break;
+        case 5: _t->one_fwd(); break;
+        case 6: _t->one_prev(); break;
         default: ;
         }
     }
@@ -87,9 +99,9 @@ int ViosGui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 7;
     }
     return _id;
 }

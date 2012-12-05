@@ -16,6 +16,13 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWindow{
+color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));
+     }
+
+</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGraphicsView" name="graphicsView_frame">
     <property name="geometry">
@@ -32,63 +39,8 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView_detection">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>80</y>
-      <width>200</width>
-      <height>200</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView_processed">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>320</y>
-      <width>70</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>60</y>
-      <width>101</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Detected Face</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>300</y>
-      <width>91</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Cropped Face</string>
+    <property name="mouseTracking">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QListWidget" name="listWidget">
@@ -114,11 +66,11 @@
      <string>...</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox_2">
+   <widget class="QGroupBox" name="selected_images">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>50</y>
+      <x>660</x>
+      <y>30</y>
       <width>291</width>
       <height>381</height>
      </rect>
@@ -127,14 +79,87 @@
      <enum>Qt::DefaultContextMenu</enum>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 2px solid gray; </string>
+     <string notr="true">QGroupBox {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #E0E0E0, stop: 1 #FFFFFF);
+     border: 2px solid gray;
+     border-radius: 5px;
+     margin-top: 1ex; /* leave space at the top for the title */
+ }
+
+ QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top center; /* position at the top center */
+     padding: 0 3px;
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #CECECE, stop: 1 #FFFFFF);
+ }
+ </string>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string>Detection</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
+    <widget class="QGraphicsView" name="graphicsView_detection">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>60</y>
+       <width>200</width>
+       <height>200</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+    <widget class="QGraphicsView" name="graphicsView_processed">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>300</y>
+       <width>70</width>
+       <height>70</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>270</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cropped Face</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>30</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Detected Face</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="face_label">
     <property name="geometry">
@@ -159,7 +184,7 @@
      subcontrol-position: top center; /* position at the top center */
      padding: 0 3px;
      background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                       stop: 0 #FFOECE, stop: 1 #FFFFFF);
+                                       stop: 0 #CECECE, stop: 1 #FFFFFF);
  }</string>
     </property>
     <property name="title">
@@ -189,7 +214,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
+   <widget class="QGroupBox" name="menu">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -198,10 +223,27 @@
       <height>80</height>
      </rect>
     </property>
-    <property name="title">
-     <string>GroupBox</string>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #E0E0E0, stop: 1 #FFFFFF);
+     border: 2px solid gray;
+     border-radius: 5px;
+     margin-top: 1ex; /* leave space at the top for the title */
+ }
+
+ QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top center; /* position at the top center */
+     padding: 0 3px;
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #CECECE, stop: 1 #FFFFFF);
+ }</string>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <property name="title">
+     <string>menu</string>
+    </property>
+    <widget class="QPushButton" name="frame_prev">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -214,7 +256,7 @@
       <string>&lt;&lt;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_3">
+    <widget class="QPushButton" name="prev">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -227,17 +269,17 @@
       <string>&lt;</string>
      </property>
     </widget>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="frame_skip">
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>50</y>
+       <y>40</y>
        <width>41</width>
        <height>31</height>
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_4">
+    <widget class="QPushButton" name="fwd">
      <property name="geometry">
       <rect>
        <x>320</x>
@@ -250,7 +292,7 @@
       <string>&gt;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="frame_fwd">
      <property name="geometry">
       <rect>
        <x>370</x>
@@ -268,9 +310,12 @@
       <rect>
        <x>30</x>
        <y>20</y>
-       <width>611</width>
+       <width>591</width>
        <height>29</height>
       </rect>
+     </property>
+     <property name="pageStep">
+      <number>10</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
