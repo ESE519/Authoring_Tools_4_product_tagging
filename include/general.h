@@ -15,4 +15,7 @@
 #include <sys/stat.h>     // System functions
 #include <dirent.h>       // For accessing directory structure
 
+#define max(a,b) ((a)>(b))?(a):(b)
+#define min(a,b) ((a)<(b))?(a):(b)
+
 #endif

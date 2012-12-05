@@ -22,13 +22,17 @@
 
 #define IMG_SIZE_X 640
 #define IMG_SIZE_Y 480
+<<<<<<< HEAD
 #define MIN_FACE_SIZE 30
+=======
+#define MIN_FACE_SIZE 50
+>>>>>>> 773a2bb9b446ce6288cc01139ecf6ad40ed5eb6b
 #define MAX_FACE_SIZE 300
 #define FACE_SIZE_STEP 20
 #define REC_FACE_SIZE 40
 #define FISHER_THRESH 20
 #define EIGEN_THRESH 1400
-#define LBPH_THRESH 45
+#define LBPH_THRESH 70
 
 using namespace std;
 using namespace cv;
@@ -81,7 +85,7 @@ void onTrackbarSlide(int value, void* userData=NULL){
 
 void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
   int bestFaceRadius = -1;
-  Point pt1,pt2,eyeLeft,eyeRight;
+  Point pt1,pt2,center;
   double t = 0;
   vector<Rect> faces;
   const static Scalar colors[] = {CV_RGB(255,0,0),
@@ -252,8 +256,13 @@ int main(int argc, char ** argv){
   fid = fopen(train_filename,"a+");
 	fid1 = fopen(class_filename,"a+");
   char * imgPath;
+<<<<<<< HEAD
   Mat frame,frames(480,640,CV_8UC3);
   String cascadeName = "/home/rajeev/OpenCV-2.4.2/data/haarcascades/haarcascade_frontalface_alt.xml";
+=======
+  Mat frame;
+  String cascadeName = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_frontalface_alt.xml";
+>>>>>>> 773a2bb9b446ce6288cc01139ecf6ad40ed5eb6b
 	String nestedCascadeName = "/home/rajeev/OpenCV-2.3.1/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 	String vidPath="";
 	double scale = 1;
