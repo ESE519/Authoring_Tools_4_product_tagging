@@ -22,11 +22,7 @@
 
 #define IMG_SIZE_X 640
 #define IMG_SIZE_Y 480
-<<<<<<< HEAD
-#define MIN_FACE_SIZE 30
-=======
 #define MIN_FACE_SIZE 50
->>>>>>> 773a2bb9b446ce6288cc01139ecf6ad40ed5eb6b
 #define MAX_FACE_SIZE 300
 #define FACE_SIZE_STEP 20
 #define REC_FACE_SIZE 40
@@ -256,13 +252,8 @@ int main(int argc, char ** argv){
   fid = fopen(train_filename,"a+");
 	fid1 = fopen(class_filename,"a+");
   char * imgPath;
-<<<<<<< HEAD
-  Mat frame,frames(480,640,CV_8UC3);
-  String cascadeName = "/home/rajeev/OpenCV-2.4.2/data/haarcascades/haarcascade_frontalface_alt.xml";
-=======
   Mat frame;
   String cascadeName = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_frontalface_alt.xml";
->>>>>>> 773a2bb9b446ce6288cc01139ecf6ad40ed5eb6b
 	String nestedCascadeName = "/home/rajeev/OpenCV-2.3.1/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 	String vidPath="";
 	double scale = 1;
@@ -466,8 +457,7 @@ int main(int argc, char ** argv){
       cap >> frame;
       if (frame.empty())
         break;
-      resize(frame,frames,frames.size());
-			faceDetect(frames, cascade, scale);
+			faceDetect(frame, cascade, scale);
 			if (vidPath.size() != 0)
 				setTrackbarPos("pos","result",++pos);
       if(waitKey( 10 ) >= 0 || faceSampleCnt == numSamples)
