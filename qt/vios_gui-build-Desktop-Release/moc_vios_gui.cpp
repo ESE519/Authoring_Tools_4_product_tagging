@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'vios_gui.h'
 **
-** Created: Wed Dec 5 16:20:47 2012
+** Created: Thu Dec 6 05:10:12 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -28,24 +28,27 @@ static const uint qt_meta_data_ViosGui[] = {
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+       9,    8,    8,    8, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-       9,    8,    8,    8, 0x08,
-      27,    8,    8,    8, 0x08,
-      38,    8,    8,    8, 0x08,
+      30,    8,    8,    8, 0x08,
       49,    8,    8,    8, 0x08,
       61,    8,    8,    8, 0x08,
-      72,    8,    8,    8, 0x08,
-      82,    8,    8,    8, 0x08,
+      73,    8,    8,    8, 0x08,
+      92,    8,    8,    8, 0x08,
+     113,    8,    8,    8, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_ViosGui[] = {
-    "ViosGui\0\0changeDirectory()\0fillList()\0"
-    "fwd_skip()\0prev_skip()\0frame_no()\0"
-    "one_fwd()\0one_prev()\0"
+    "ViosGui\0\0map_buttons(QString)\0"
+    "change_directory()\0fill_list()\0"
+    "load_data()\0change_skip_step()\0"
+    "menu_decode(QString)\0set_slider()\0"
 };
 
 void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -54,17 +57,16 @@ void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         Q_ASSERT(staticMetaObject.cast(_o));
         ViosGui *_t = static_cast<ViosGui *>(_o);
         switch (_id) {
-        case 0: _t->changeDirectory(); break;
-        case 1: _t->fillList(); break;
-        case 2: _t->fwd_skip(); break;
-        case 3: _t->prev_skip(); break;
-        case 4: _t->frame_no(); break;
-        case 5: _t->one_fwd(); break;
-        case 6: _t->one_prev(); break;
+        case 0: _t->map_buttons((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 1: _t->change_directory(); break;
+        case 2: _t->fill_list(); break;
+        case 3: _t->load_data(); break;
+        case 4: _t->change_skip_step(); break;
+        case 5: _t->menu_decode((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: _t->set_slider(); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData ViosGui::staticMetaObjectExtraData = {
@@ -104,5 +106,12 @@ int ViosGui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 7;
     }
     return _id;
+}
+
+// SIGNAL 0
+void ViosGui::map_buttons(const QString & _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

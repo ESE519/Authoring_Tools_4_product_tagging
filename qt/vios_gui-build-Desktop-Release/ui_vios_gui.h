@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Wed Dec 5 17:42:11 2012
+** Created: Thu Dec 6 15:55:45 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -14,6 +14,7 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QCheckBox>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
@@ -26,6 +27,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QSlider>
 #include <QtGui/QStatusBar>
+#include <QtGui/QTableView>
 #include <QtGui/QTextEdit>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
@@ -45,17 +47,21 @@ public:
     QGraphicsView *graphicsView_processed;
     QLabel *label_2;
     QLabel *label;
+    QCheckBox *checkBox;
+    QTableView *tableView;
     QGroupBox *face_label;
     QRadioButton *radioButton;
     QTextEdit *textEdit_2;
     QGroupBox *menu;
-    QPushButton *frame_prev;
-    QPushButton *prev;
-    QTextEdit *frame_skip;
-    QPushButton *fwd;
-    QPushButton *frame_fwd;
+    QPushButton *prev_skip_button;
+    QPushButton *prev_button;
+    QTextEdit *frame_skip_textedit;
+    QPushButton *fwd_button;
+    QPushButton *fwd_skip_button;
     QSlider *horizontalSlider;
     QPushButton *pushButton_5;
+    QTextEdit *tmp_textEdit;
+    QPushButton *tmp_pushButton;
     QMenuBar *menuBar;
     QMenu *menuViOS;
     QToolBar *mainToolBar;
@@ -91,7 +97,7 @@ public:
         browse->setGeometry(QRect(460, 10, 23, 25));
         selected_images = new QGroupBox(centralWidget);
         selected_images->setObjectName(QString::fromUtf8("selected_images"));
-        selected_images->setGeometry(QRect(660, 30, 291, 381));
+        selected_images->setGeometry(QRect(660, 40, 291, 381));
         selected_images->setContextMenuPolicy(Qt::DefaultContextMenu);
         selected_images->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
 "     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -112,23 +118,31 @@ public:
         selected_images->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
         graphicsView_detection = new QGraphicsView(selected_images);
         graphicsView_detection->setObjectName(QString::fromUtf8("graphicsView_detection"));
-        graphicsView_detection->setGeometry(QRect(50, 60, 200, 200));
+        graphicsView_detection->setGeometry(QRect(10, 70, 155, 155));
         QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(graphicsView_detection->sizePolicy().hasHeightForWidth());
         graphicsView_detection->setSizePolicy(sizePolicy1);
+        graphicsView_detection->setMinimumSize(QSize(0, 0));
+        graphicsView_detection->setMaximumSize(QSize(16777215, 16777215));
         graphicsView_processed = new QGraphicsView(selected_images);
         graphicsView_processed->setObjectName(QString::fromUtf8("graphicsView_processed"));
-        graphicsView_processed->setGeometry(QRect(110, 300, 70, 70));
+        graphicsView_processed->setGeometry(QRect(200, 110, 70, 70));
         sizePolicy1.setHeightForWidth(graphicsView_processed->sizePolicy().hasHeightForWidth());
         graphicsView_processed->setSizePolicy(sizePolicy1);
         label_2 = new QLabel(selected_images);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(100, 270, 91, 17));
+        label_2->setGeometry(QRect(190, 80, 91, 17));
         label = new QLabel(selected_images);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(100, 30, 101, 17));
+        label->setGeometry(QRect(40, 40, 101, 17));
+        checkBox = new QCheckBox(selected_images);
+        checkBox->setObjectName(QString::fromUtf8("checkBox"));
+        checkBox->setGeometry(QRect(20, 240, 121, 22));
+        tableView = new QTableView(selected_images);
+        tableView->setObjectName(QString::fromUtf8("tableView"));
+        tableView->setGeometry(QRect(20, 280, 181, 81));
         face_label = new QGroupBox(centralWidget);
         face_label->setObjectName(QString::fromUtf8("face_label"));
         face_label->setGeometry(QRect(660, 440, 301, 171));
@@ -171,21 +185,21 @@ public:
 "     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                       stop: 0 #CECECE, stop: 1 #FFFFFF);\n"
 " }"));
-        frame_prev = new QPushButton(menu);
-        frame_prev->setObjectName(QString::fromUtf8("frame_prev"));
-        frame_prev->setGeometry(QRect(150, 50, 41, 27));
-        prev = new QPushButton(menu);
-        prev->setObjectName(QString::fromUtf8("prev"));
-        prev->setGeometry(QRect(200, 50, 41, 27));
-        frame_skip = new QTextEdit(menu);
-        frame_skip->setObjectName(QString::fromUtf8("frame_skip"));
-        frame_skip->setGeometry(QRect(260, 40, 41, 31));
-        fwd = new QPushButton(menu);
-        fwd->setObjectName(QString::fromUtf8("fwd"));
-        fwd->setGeometry(QRect(320, 50, 41, 27));
-        frame_fwd = new QPushButton(menu);
-        frame_fwd->setObjectName(QString::fromUtf8("frame_fwd"));
-        frame_fwd->setGeometry(QRect(370, 50, 41, 27));
+        prev_skip_button = new QPushButton(menu);
+        prev_skip_button->setObjectName(QString::fromUtf8("prev_skip_button"));
+        prev_skip_button->setGeometry(QRect(200, 50, 41, 27));
+        prev_button = new QPushButton(menu);
+        prev_button->setObjectName(QString::fromUtf8("prev_button"));
+        prev_button->setGeometry(QRect(250, 50, 41, 27));
+        frame_skip_textedit = new QTextEdit(menu);
+        frame_skip_textedit->setObjectName(QString::fromUtf8("frame_skip_textedit"));
+        frame_skip_textedit->setGeometry(QRect(300, 40, 41, 31));
+        fwd_button = new QPushButton(menu);
+        fwd_button->setObjectName(QString::fromUtf8("fwd_button"));
+        fwd_button->setGeometry(QRect(350, 50, 41, 27));
+        fwd_skip_button = new QPushButton(menu);
+        fwd_skip_button->setObjectName(QString::fromUtf8("fwd_skip_button"));
+        fwd_skip_button->setGeometry(QRect(400, 50, 41, 27));
         horizontalSlider = new QSlider(menu);
         horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
         horizontalSlider->setGeometry(QRect(30, 20, 591, 29));
@@ -194,6 +208,12 @@ public:
         pushButton_5 = new QPushButton(centralWidget);
         pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
         pushButton_5->setGeometry(QRect(40, 10, 98, 27));
+        tmp_textEdit = new QTextEdit(centralWidget);
+        tmp_textEdit->setObjectName(QString::fromUtf8("tmp_textEdit"));
+        tmp_textEdit->setGeometry(QRect(490, 0, 461, 21));
+        tmp_pushButton = new QPushButton(centralWidget);
+        tmp_pushButton->setObjectName(QString::fromUtf8("tmp_pushButton"));
+        tmp_pushButton->setGeometry(QRect(960, 0, 31, 27));
         ViosGui->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ViosGui);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -222,14 +242,16 @@ public:
         selected_images->setTitle(QApplication::translate("ViosGui", "Detection", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("ViosGui", "Cropped Face", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ViosGui", "Detected Face", 0, QApplication::UnicodeUTF8));
+        checkBox->setText(QApplication::translate("ViosGui", "Show Margins", 0, QApplication::UnicodeUTF8));
         face_label->setTitle(QApplication::translate("ViosGui", "Face Label", 0, QApplication::UnicodeUTF8));
         radioButton->setText(QApplication::translate("ViosGui", "RadioButton", 0, QApplication::UnicodeUTF8));
         menu->setTitle(QApplication::translate("ViosGui", "menu", 0, QApplication::UnicodeUTF8));
-        frame_prev->setText(QApplication::translate("ViosGui", "<<", 0, QApplication::UnicodeUTF8));
-        prev->setText(QApplication::translate("ViosGui", "<", 0, QApplication::UnicodeUTF8));
-        fwd->setText(QApplication::translate("ViosGui", ">", 0, QApplication::UnicodeUTF8));
-        frame_fwd->setText(QApplication::translate("ViosGui", ">>", 0, QApplication::UnicodeUTF8));
+        prev_skip_button->setText(QApplication::translate("ViosGui", "<<", 0, QApplication::UnicodeUTF8));
+        prev_button->setText(QApplication::translate("ViosGui", "<", 0, QApplication::UnicodeUTF8));
+        fwd_button->setText(QApplication::translate("ViosGui", ">", 0, QApplication::UnicodeUTF8));
+        fwd_skip_button->setText(QApplication::translate("ViosGui", ">>", 0, QApplication::UnicodeUTF8));
         pushButton_5->setText(QApplication::translate("ViosGui", "Undo", 0, QApplication::UnicodeUTF8));
+        tmp_pushButton->setText(QApplication::translate("ViosGui", "L", 0, QApplication::UnicodeUTF8));
         menuViOS->setTitle(QApplication::translate("ViosGui", "ViOS", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

@@ -7,13 +7,19 @@
 #include <QImage>
 #include <QTextStream>
 #include <QDebug>
-#include <opencv2/opencv.hpp>
 #include <QFileDialog>
+#include <QSignalMapper>
 #include <QDir>
 #include <QObject>
+#include <QPen>
+#include <QGraphicsRectItem>
+#include <QList>
+#include "general.h"
+#include "face.h"
 
-using namespace std;
-using namespace cv;
+#define DEFAULT_VIDEO_STEP 10
+
+using namespace face;
 
 namespace Ui {
 class ViosGui;
@@ -24,29 +30,36 @@ class ViosGui : public QMainWindow
     Q_OBJECT
     
 public:
-    int skip,current_frame,max_frame; //no of frame to be skipped
-    Mat I;
+    int video_step, frame_pos,frame_count; //no of frame to be skipped
+    Mat image_cv;
     VideoCapture cap;
-    QImage image;
+    QImage image_qt;
     QPixmap pixmap;
-    QGraphicsScene *scene;
+    QGraphicsScene *scene, *scene_detected, *scene_cropped;
+    FaceDetect detector;
+    vector <Rect> face_pos;
+    vector <struct Eye> eye;
+    QPen default_pen, active_pen;
     explicit ViosGui(QWidget *parent = 0);
     ~ViosGui();
-    void add_frame(void);
-    void ImageUpdate();
+    QImage Mat2QImage(const Mat& mat);
+    void update_image();
 
 private slots:
-    void changeDirectory();
-    void fillList();
-    void fwd_skip();
-    void prev_skip();
-    void frame_no();
-    void one_fwd();
-    void one_prev();
+    void change_directory();
+    void fill_list();
+    void load_data();
+    void change_skip_step();
+    void menu_decode(const QString &);
+    void set_slider();
+
+signals:
+    void map_buttons(const QString &);
 
 private:
     Ui::ViosGui *ui;
     QDir directory;
+    QSignalMapper *signalMapper;
 };
 
 #endif // VIOS_GUI_H

@@ -18,3 +18,4 @@ CMakeFiles
 *.mpg
 *.mp*
 *.pro.user*
+*fuse*
