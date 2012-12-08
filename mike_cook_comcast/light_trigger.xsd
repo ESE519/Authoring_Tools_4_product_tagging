@@ -1,0 +1,67 @@
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mac="http://www.tvworks.com/tva/xml/ns/max/data-types"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" 
+    attributeFormDefault="unqualified">
+   
+	<xs:import namespace="http://www.tvworks.com/tva/xml/ns/max/data-types"
+		schemaLocation="http://developer.tva.tvworks.com/xml/ns/max/data-types-3.4.xsd" />
+
+  <xs:element name="data">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="triggerdata" type="triggerdata-type"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="rowType">
+    <xs:attribute name="time" type="xs:int" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="triggerdata-type">
+    <xs:sequence>
+      <xs:element name="row" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="rowType">
+              <xs:sequence>
+				<xs:element name="c1_id" type="mac:uint8" />
+				<xs:element name="c1_red" type="mac:uint8" />
+				<xs:element name="c1_blue" type="mac:uint8" />
+				<xs:element name="c1_green" type="mac:uint8" />
+				<xs:element name="c1_duration" type="mac:uint8" />
+				<xs:element name="c2_id" type="mac:uint8" />
+				<xs:element name="c2_red" type="mac:uint8" />
+				<xs:element name="c2_blue" type="mac:uint8" />
+				<xs:element name="c2_green" type="mac:uint8" />
+				<xs:element name="c2_duration" type="mac:uint8" />
+				<xs:element name="c3_id" type="mac:uint8" />
+				<xs:element name="c3_red" type="mac:uint8" />
+				<xs:element name="c3_blue" type="mac:uint8" />
+				<xs:element name="c3_green" type="mac:uint8" />
+				<xs:element name="c3_duration" type="mac:uint8" />
+				<xs:element name="c4_id" type="mac:uint8" />
+				<xs:element name="c4_red" type="mac:uint8" />
+				<xs:element name="c4_blue" type="mac:uint8" />
+				<xs:element name="c4_green" type="mac:uint8" />
+				<xs:element name="c4_duration" type="mac:uint8" />
+				<xs:element name="c5_id" type="mac:uint8" />
+				<xs:element name="c5_red" type="mac:uint8" />
+				<xs:element name="c5_blue" type="mac:uint8" />
+				<xs:element name="c5_green" type="mac:uint8" />
+				<xs:element name="c5_duration" type="mac:uint8" />
+				<xs:element name="c6_id" type="mac:uint8" />
+				<xs:element name="c6_red" type="mac:uint8" />
+				<xs:element name="c6_blue" type="mac:uint8" />
+				<xs:element name="c6_green" type="mac:uint8" />
+				<xs:element name="c6_duration" type="mac:uint8" />
+		</xs:sequence>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
