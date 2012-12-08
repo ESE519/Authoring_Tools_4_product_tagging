@@ -36,22 +36,27 @@ public:
     QImage image_qt;
     QPixmap pixmap;
     QGraphicsScene *scene, *scene_detected, *scene_cropped;
+    QGraphicsLineItem * hline, * vline1, * vline2;
     FaceDetect detector;
     vector <Rect> face_pos;
     vector <struct Eye> eye;
     QPen default_pen, active_pen;
+    int num_face_detections;
     explicit ViosGui(QWidget *parent = 0);
     ~ViosGui();
     QImage Mat2QImage(const Mat& mat);
+
+private:
     void update_image();
+    void load_data(string input_path);
 
 private slots:
-    void change_directory();
-    void fill_list();
-    void load_data();
+    void browse_files();
     void change_skip_step();
     void menu_decode(const QString &);
     void set_slider();
+    void show_margins();
+    void change_margins(double);
 
 signals:
     void map_buttons(const QString &);

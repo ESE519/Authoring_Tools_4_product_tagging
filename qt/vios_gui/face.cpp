@@ -88,9 +88,17 @@ double FaceDetect::detect_face(vector <Rect> &face_pos, vector <struct Eye> &eye
                                   Size(MAX_FACE_DETECT_SIZE, MAX_FACE_DETECT_SIZE));
                                   
   int cnt = 0;
-  for(vector <Rect>::const_iterator r = face_pos.begin(); r != face_pos.end(); r++){
+  int i=0;
+  for(vector <Rect>::const_iterator r = face_pos.begin(); r != face_pos.end(); r++,i++){
     aspect_ratio = (double)(r->width)/r->height;
     if (aspect_ratio > 0.75 && aspect_ratio < 1.3){
+      Point2f cen;
+      cen.x = r->x + (r->width + r->height)/2;
+      cen.y = r->y + (r->width + r->height)/2;
+      face_pos[i].width = max(r->width,r->height);
+      face_pos[i].height = r->width;
+      face_pos[i].x = cen.x - r->width;
+      face_pos[i].y = cen.y - r->height;
       face_ROI = scaled_img(*r);
       FaceDetect::detect_eyes(eye_pos, face_ROI);
       eye_pos.left_pos.x = round((r->x + eye_pos.left_pos.x)*scale);

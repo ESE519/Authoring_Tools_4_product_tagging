@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'vios_gui.h'
 **
-** Created: Thu Dec 6 05:10:12 2012
+** Created: Sat Dec 8 15:46:37 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -35,10 +35,10 @@ static const uint qt_meta_data_ViosGui[] = {
 
  // slots: signature, parameters, type, tag, flags
       30,    8,    8,    8, 0x08,
-      49,    8,    8,    8, 0x08,
-      61,    8,    8,    8, 0x08,
-      73,    8,    8,    8, 0x08,
-      92,    8,    8,    8, 0x08,
+      45,    8,    8,    8, 0x08,
+      64,    8,    8,    8, 0x08,
+      85,    8,    8,    8, 0x08,
+      98,    8,    8,    8, 0x08,
      113,    8,    8,    8, 0x08,
 
        0        // eod
@@ -46,9 +46,9 @@ static const uint qt_meta_data_ViosGui[] = {
 
 static const char qt_meta_stringdata_ViosGui[] = {
     "ViosGui\0\0map_buttons(QString)\0"
-    "change_directory()\0fill_list()\0"
-    "load_data()\0change_skip_step()\0"
+    "browse_files()\0change_skip_step()\0"
     "menu_decode(QString)\0set_slider()\0"
+    "show_margins()\0change_margins(double)\0"
 };
 
 void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -58,12 +58,12 @@ void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         ViosGui *_t = static_cast<ViosGui *>(_o);
         switch (_id) {
         case 0: _t->map_buttons((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 1: _t->change_directory(); break;
-        case 2: _t->fill_list(); break;
-        case 3: _t->load_data(); break;
-        case 4: _t->change_skip_step(); break;
-        case 5: _t->menu_decode((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 6: _t->set_slider(); break;
+        case 1: _t->browse_files(); break;
+        case 2: _t->change_skip_step(); break;
+        case 3: _t->menu_decode((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->set_slider(); break;
+        case 5: _t->show_margins(); break;
+        case 6: _t->change_margins((*reinterpret_cast< double(*)>(_a[1]))); break;
         default: ;
         }
     }
