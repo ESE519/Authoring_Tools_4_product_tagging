@@ -484,9 +484,9 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
      <widget class="QListWidget" name="listWidget">
       <property name="geometry">
        <rect>
-        <x>140</x>
+        <x>30</x>
         <y>10</y>
-        <width>281</width>
+        <width>391</width>
         <height>20</height>
        </rect>
       </property>
@@ -605,12 +605,12 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
        </property>
       </widget>
      </widget>
-     <widget class="QRadioButton" name="radioButton_2">
+     <widget class="QRadioButton" name="mode_image">
       <property name="geometry">
        <rect>
         <x>460</x>
         <y>10</y>
-        <width>116</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>
@@ -618,12 +618,12 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
        <string>Image</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="radioButton_3">
+     <widget class="QRadioButton" name="mode_video">
       <property name="geometry">
        <rect>
-        <x>590</x>
+        <x>540</x>
         <y>10</y>
-        <width>116</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>

@@ -46,6 +46,7 @@ ViosGui::ViosGui(QWidget *parent) :
 {
     ui->setupUi(this);
     video_step = 2*DEFAULT_VIDEO_STEP;
+    image_step = 5;
     signalMapper = new QSignalMapper(this);
     default_pen.setColor(QColor(255,0,0));
     default_pen.setJoinStyle(Qt::RoundJoin);
@@ -53,7 +54,9 @@ ViosGui::ViosGui(QWidget *parent) :
     active_pen.setJoinStyle(Qt::RoundJoin);
     active_pen.setWidth(2);
 
+    ui->mode_video->setChecked(1);
     directory = QDir::current();
+    image_filter << "*.jpg" << "*.jpeg" << "*.JPEG" << "*.JPG" << "*.png" << "*.PNG" << "*.bmp" << "*.BMP" << "*.tiff" << "*.TIFF";
     connect(ui->browse, SIGNAL(clicked()), this, SLOT(browse_files()));
 
     connect(ui->fwd_skip_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -96,41 +99,70 @@ ViosGui::~ViosGui()
     delete ui;
 }
 
-void ViosGui::load_data(string input_path)
+void ViosGui::load_data()
 {
-    cap.open(input_path);
-    frame_count = cap.get(CV_CAP_PROP_FRAME_COUNT);
-    frame_pos = 0;
-    ui->horizontalSlider->setMaximum(frame_count-1);
-    ui->horizontalSlider->setTracking(1);
-    update_image();
+    if (ui->mode_video->isChecked()){
+        cap.open(input_path);
+        frame_count = cap.get(CV_CAP_PROP_FRAME_COUNT);
+        frame_pos = 0;
+        ui->horizontalSlider->setMaximum(frame_count-1);
+        ui->horizontalSlider->setTracking(1);
+        update_image();
+    }
+    else if (ui->mode_image->isChecked()){
+        image_names = directory.entryList();
+        frame_pos = 0;
+        frame_count = image_names.size();
+        ui->horizontalSlider->setMaximum(frame_count-1);
+        ui->horizontalSlider->setTracking(1);
+        update_image();
+    }
 }
 
 void ViosGui::menu_decode(const QString & button_name)
 {
     int step = 0;
-    if (button_name == "fwd_skip")
-        step = video_step;
-    else if (button_name == "prev_skip")
-        step = -1* video_step;
-    else if (button_name == "fwd")
-        step = DEFAULT_VIDEO_STEP;
-    else if (button_name == "prev")
-        step = -1 * DEFAULT_VIDEO_STEP;
+    if (ui->mode_video->isChecked()){
+        if (button_name == "fwd_skip")
+            step = video_step;
+        else if (button_name == "prev_skip")
+            step = -1* video_step;
+        else if (button_name == "fwd")
+            step = DEFAULT_VIDEO_STEP;
+        else if (button_name == "prev")
+            step = -1 * DEFAULT_VIDEO_STEP;
+    }
+    else{
+        if (button_name == "fwd_skip")
+            step = image_step;
+        else if (button_name == "prev_skip")
+            step = -1* image_step;
+        else if (button_name == "fwd")
+            step = 1;
+        else if (button_name == "prev")
+            step = -1;
+    }
     frame_pos += step;
     update_image();
 }
 
-void ViosGui::update_image(void)
+void ViosGui::update_image()
 {
     if (frame_pos >= frame_count)
         frame_pos = frame_count - 1;
     else if (frame_pos < 0)
         frame_pos = 0;
-    cap.set(CV_CAP_PROP_POS_FRAMES,frame_pos);
-    cap >> image_cv;
+    if (ui->mode_video->isChecked()){
+        cap.set(CV_CAP_PROP_POS_FRAMES,frame_pos);
+        cap >> image_cv;
+    }
+    else{
+        QString tmp = image_names.at(frame_pos);
+        image_cv = imread(input_path+"/"+tmp.toStdString());
+    }
     detector.detect_face(face_pos,eye,image_cv);
-    frame_pos = cap.get(CV_CAP_PROP_POS_FRAMES);
+    if (ui->mode_video->isChecked())
+        frame_pos = cap.get(CV_CAP_PROP_POS_FRAMES);
     ui->horizontalSlider->setValue(frame_pos);
     image_qt = Mat2QImage(image_cv);
     scene->addPixmap(QPixmap::fromImage(image_qt));
@@ -231,11 +263,20 @@ void ViosGui::change_skip_step()
     video_step = txt.toInt();
 }
 void ViosGui::browse_files(){
- /* select a file using file dialog */
-    QString path = QFileDialog::getOpenFileName(this, tr("Browse to add"), directory.path());
+    QString path;
+    if (ui->mode_image->isChecked()){
+        // select a directory
+        directory.setNameFilters(image_filter);
+        path = QFileDialog::getExistingDirectory(this, tr("Browse to add"), directory.path());
+    }
+    else{
+        // select a file using file dialog
+        path = QFileDialog::getOpenFileName(this, tr("Browse to add"), directory.path());
+    }
     if (path!=""){
         directory.setPath(path);
-        load_data(path.toStdString());
+        input_path = path.toStdString();
+        load_data();
     }
     ui->listWidget->clear();
     ui->listWidget->addItem(directory.absolutePath());

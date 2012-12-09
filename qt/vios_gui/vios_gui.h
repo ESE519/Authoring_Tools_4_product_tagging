@@ -30,7 +30,7 @@ class ViosGui : public QMainWindow
     Q_OBJECT
     
 public:
-    int video_step, frame_pos,frame_count; //no of frame to be skipped
+    int video_step, image_step, frame_pos,frame_count; //no of frame to be skipped
     Mat image_cv;
     VideoCapture cap;
     QImage image_qt;
@@ -41,6 +41,9 @@ public:
     vector <Rect> face_pos;
     vector <struct Eye> eye;
     QPen default_pen, active_pen;
+    QStringList image_filter;
+    QStringList image_names;
+    string input_path;
     int num_face_detections;
     explicit ViosGui(QWidget *parent = 0);
     ~ViosGui();
@@ -48,7 +51,7 @@ public:
 
 private:
     void update_image();
-    void load_data(string input_path);
+    void load_data();
 
 private slots:
     void browse_files();

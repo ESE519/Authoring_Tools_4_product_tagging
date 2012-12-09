@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Sat Dec 8 16:21:23 2012
+** Created: Sat Dec 8 18:22:11 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -76,6 +76,8 @@ public:
     QPushButton *fwd_button;
     QPushButton *fwd_skip_button;
     QSlider *horizontalSlider;
+    QRadioButton *mode_image;
+    QRadioButton *mode_video;
     QWidget *object;
     QMenuBar *menuBar;
     QMenu *menuViOS;
@@ -285,6 +287,12 @@ public:
         horizontalSlider->setGeometry(QRect(30, 20, 591, 29));
         horizontalSlider->setPageStep(10);
         horizontalSlider->setOrientation(Qt::Horizontal);
+        mode_image = new QRadioButton(face);
+        mode_image->setObjectName(QString::fromUtf8("mode_image"));
+        mode_image->setGeometry(QRect(460, 10, 71, 22));
+        mode_video = new QRadioButton(face);
+        mode_video->setObjectName(QString::fromUtf8("mode_video"));
+        mode_video->setGeometry(QRect(540, 10, 71, 22));
         tabwidget->addTab(face, QString());
         object = new QWidget();
         object->setObjectName(QString::fromUtf8("object"));
@@ -339,6 +347,8 @@ public:
         prev_button->setText(QApplication::translate("ViosGui", "<", 0, QApplication::UnicodeUTF8));
         fwd_button->setText(QApplication::translate("ViosGui", ">", 0, QApplication::UnicodeUTF8));
         fwd_skip_button->setText(QApplication::translate("ViosGui", ">>", 0, QApplication::UnicodeUTF8));
+        mode_image->setText(QApplication::translate("ViosGui", "Image", 0, QApplication::UnicodeUTF8));
+        mode_video->setText(QApplication::translate("ViosGui", "Video", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(face), QApplication::translate("ViosGui", "Face Recognition", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(object), QApplication::translate("ViosGui", "Object Detection", 0, QApplication::UnicodeUTF8));
         menuViOS->setTitle(QApplication::translate("ViosGui", "ViOS", 0, QApplication::UnicodeUTF8));
