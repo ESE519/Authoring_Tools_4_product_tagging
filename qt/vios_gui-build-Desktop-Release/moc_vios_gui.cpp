@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'vios_gui.h'
 **
-** Created: Sat Dec 8 18:25:46 2012
+** Created: Sun Dec 9 23:29:07 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_ViosGui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+      12,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -40,6 +40,11 @@ static const uint qt_meta_data_ViosGui[] = {
       85,    8,    8,    8, 0x08,
       98,    8,    8,    8, 0x08,
      113,    8,    8,    8, 0x08,
+     136,    8,    8,    8, 0x08,
+     152,    8,    8,    8, 0x08,
+     165,    8,    8,    8, 0x08,
+     180,    8,    8,    8, 0x08,
+     196,    8,    8,    8, 0x08,
 
        0        // eod
 };
@@ -49,6 +54,9 @@ static const char qt_meta_stringdata_ViosGui[] = {
     "browse_files()\0change_skip_step()\0"
     "menu_decode(QString)\0set_slider()\0"
     "show_margins()\0change_margins(double)\0"
+    "delete_labels()\0add_labels()\0"
+    "select_image()\0discard_image()\0"
+    "build_recognizer()\0"
 };
 
 void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -64,6 +72,11 @@ void ViosGui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 4: _t->set_slider(); break;
         case 5: _t->show_margins(); break;
         case 6: _t->change_margins((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 7: _t->delete_labels(); break;
+        case 8: _t->add_labels(); break;
+        case 9: _t->select_image(); break;
+        case 10: _t->discard_image(); break;
+        case 11: _t->build_recognizer(); break;
         default: ;
         }
     }
@@ -101,9 +114,9 @@ int ViosGui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 12;
     }
     return _id;
 }

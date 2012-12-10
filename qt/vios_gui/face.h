@@ -16,7 +16,7 @@ namespace face{
 		public:
 		  //Face();
 			//~Face();
-			void align_face(Mat &out, Mat &img, struct Eye eye, float offset_x, float offset_y, Size sz, string mode = "front");
+            void align_face(Mat &out, Mat & img, struct Eye eye, float offset_x, float offset_y, Size sz, string mode = "front");
 	};
 
 	class FaceDetect: public Face{
@@ -47,6 +47,7 @@ namespace face{
 			double detect_face(vector <Rect> &face_pos, vector <struct Eye> &eye, Mat &img, double scale = 1, string mode = "front");
 			void detect_eyes(struct Eye &eye_pos, Mat &img);
 			void draw_face(vector <Rect> &face_pos, vector <struct Eye> & eye_pos, Mat &img, bool eye_flag = false);
+            void draw_eyes(vector <struct Eye> & eye_pos, Mat &img);
 	};
 
 	class FaceRecognize: public FaceDetect{
@@ -56,7 +57,7 @@ namespace face{
 	    Ptr<FaceRecognizer> eigen_recognizer, fisher_recognizer, lbph_recognizer;
 		public:
 			FaceRecognize():FaceDetect(){
-			  FACE_RECOGNIZE_SIZE = 50;
+              FACE_RECOGNIZE_SIZE = 70;
         EYE_LEVEL = FACE_RECOGNIZE_SIZE/3;
         EIGEN_THRESH = 1400;
         FISHER_THRESH = 20;

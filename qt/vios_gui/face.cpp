@@ -132,10 +132,13 @@ void FaceDetect::detect_eyes(struct Eye &eye_pos, Mat &img){
                                   (0 | CV_HAAR_SCALE_IMAGE), 
                                   Size(MIN_EYE_DETECT_SIZE, MIN_EYE_DETECT_SIZE),
                                   Size(MAX_EYE_DETECT_SIZE, MAX_EYE_DETECT_SIZE));
+  int img_half_level = scaled_img.rows/2;
   for(vector <Rect>::const_iterator r = eye_objects.begin(); r != eye_objects.end(); r++){
     radius = 0.25*(r->width + r->height);
     center.x = r->x + r->width*0.5;
     center.y = r->y + r->height*0.5;
+    if (center.y > img_half_level)
+        continue;
     if (radius > radius1){
       radius2 = radius1;
       center2.x = center1.x;
@@ -150,21 +153,42 @@ void FaceDetect::detect_eyes(struct Eye &eye_pos, Mat &img){
       center2.y = center.y;
     }
   }
-  if (center1.x < center2.x){
-    eye_pos.left_pos.x = center2.x/scale;
-    eye_pos.left_pos.y = center2.y/scale;
-    eye_pos.left_radius = radius2/scale;
-    eye_pos.right_pos.x = center1.x/scale;
-    eye_pos.right_pos.y = center1.y/scale;
-    eye_pos.right_radius = radius1/scale;
+  int image_width_half = scaled_img.cols/2;
+  if (radius2 <= 0){
+      if (center1.x < image_width_half){
+        eye_pos.left_pos.x = center2.x/scale;
+        eye_pos.left_pos.y = center2.y/scale;
+        eye_pos.left_radius = radius2/scale;
+        eye_pos.right_pos.x = center1.x/scale;
+        eye_pos.right_pos.y = center1.y/scale;
+        eye_pos.right_radius = radius1/scale;
+      }
+      else {
+        eye_pos.left_pos.x = center1.x/scale;
+        eye_pos.left_pos.y = center1.y/scale;
+        eye_pos.left_radius = radius1/scale;
+        eye_pos.right_pos.x = center2.x/scale;
+        eye_pos.right_pos.y = center2.y/scale;
+        eye_pos.right_radius = radius2/scale;
+      }
   }
-  else {
-    eye_pos.left_pos.x = center1.x/scale;
-    eye_pos.left_pos.y = center1.y/scale;
-    eye_pos.left_radius = radius1/scale;
-    eye_pos.right_pos.x = center2.x/scale;
-    eye_pos.right_pos.y = center2.y/scale;
-    eye_pos.right_radius = radius2/scale;
+  else{
+      if (center1.x < center2.x){
+        eye_pos.left_pos.x = center2.x/scale;
+        eye_pos.left_pos.y = center2.y/scale;
+        eye_pos.left_radius = radius2/scale;
+        eye_pos.right_pos.x = center1.x/scale;
+        eye_pos.right_pos.y = center1.y/scale;
+        eye_pos.right_radius = radius1/scale;
+      }
+      else {
+        eye_pos.left_pos.x = center1.x/scale;
+        eye_pos.left_pos.y = center1.y/scale;
+        eye_pos.left_radius = radius1/scale;
+        eye_pos.right_pos.x = center2.x/scale;
+        eye_pos.right_pos.y = center2.y/scale;
+        eye_pos.right_radius = radius2/scale;
+      }
   }
   return;
 }
@@ -185,6 +209,16 @@ void FaceDetect::draw_face(vector <Rect> &face_pos, vector <struct Eye> & eye_po
         circle(img, eye_pos[i].right_pos, eye_pos[i].right_radius, CV_RGB(0,0,255), 1, 8, 0);
       }
     }
+  }
+  return;
+}
+
+void FaceDetect::draw_eyes(vector <struct Eye> & eye_pos, Mat &img){
+  for(int i=0; i<eye_pos.size(); i++){
+    if (eye_pos[i].left_radius > 0)
+        circle(img, eye_pos[i].left_pos, eye_pos[i].left_radius, CV_RGB(0,0,255), 1, 8, 0);
+    if (eye_pos[i].right_radius > 0)
+        circle(img, eye_pos[i].right_pos, eye_pos[i].right_radius, CV_RGB(0,0,255), 1, 8, 0);
   }
   return;
 }
