@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Sun Dec 9 23:30:10 2012
+** Created: Mon Dec 10 03:50:03 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -21,7 +21,6 @@
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QListView>
 #include <QtGui/QListWidget>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
@@ -56,7 +55,6 @@ public:
     QLabel *label_2;
     QLabel *label;
     QCheckBox *show_margins;
-    QListView *statistics;
     QLabel *label_3;
     QDoubleSpinBox *h_indent;
     QDoubleSpinBox *v_indent;
@@ -66,6 +64,7 @@ public:
     QPushButton *select_button;
     QPushButton *discard_button;
     QPushButton *train_button;
+    QLabel *stat_label;
     QGraphicsView *graphicsView_frame;
     QToolButton *browse;
     QListWidget *listWidget;
@@ -191,9 +190,6 @@ public:
         show_margins = new QCheckBox(selected_images);
         show_margins->setObjectName(QString::fromUtf8("show_margins"));
         show_margins->setGeometry(QRect(10, 210, 121, 22));
-        statistics = new QListView(selected_images);
-        statistics->setObjectName(QString::fromUtf8("statistics"));
-        statistics->setGeometry(QRect(10, 260, 161, 111));
         label_3 = new QLabel(selected_images);
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setGeometry(QRect(60, 240, 66, 17));
@@ -234,6 +230,10 @@ public:
         train_button = new QPushButton(selected_images);
         train_button->setObjectName(QString::fromUtf8("train_button"));
         train_button->setGeometry(QRect(180, 340, 98, 27));
+        stat_label = new QLabel(selected_images);
+        stat_label->setObjectName(QString::fromUtf8("stat_label"));
+        stat_label->setGeometry(QRect(20, 260, 141, 81));
+        stat_label->setStyleSheet(QString::fromUtf8("background-color:rgb(255, 255, 255);"));
         graphicsView_frame = new QGraphicsView(face);
         graphicsView_frame->setObjectName(QString::fromUtf8("graphicsView_frame"));
         graphicsView_frame->setGeometry(QRect(20, 50, 640, 480));
@@ -340,6 +340,7 @@ public:
         select_button->setText(QApplication::translate("ViosGui", "Select", 0, QApplication::UnicodeUTF8));
         discard_button->setText(QApplication::translate("ViosGui", "Discard", 0, QApplication::UnicodeUTF8));
         train_button->setText(QApplication::translate("ViosGui", "Train", 0, QApplication::UnicodeUTF8));
+        stat_label->setText(QString());
         browse->setText(QApplication::translate("ViosGui", "...", 0, QApplication::UnicodeUTF8));
         menu->setTitle(QApplication::translate("ViosGui", "menu", 0, QApplication::UnicodeUTF8));
         prev_skip_button->setText(QApplication::translate("ViosGui", "<<", 0, QApplication::UnicodeUTF8));

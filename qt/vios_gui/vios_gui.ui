@@ -260,16 +260,6 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
         <string>Show Margins</string>
        </property>
       </widget>
-      <widget class="QListView" name="statistics">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>260</y>
-         <width>161</width>
-         <height>111</height>
-        </rect>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
@@ -424,6 +414,22 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
        </property>
        <property name="text">
         <string>Train</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="stat_label">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>260</y>
+         <width>141</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color:rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </widget>

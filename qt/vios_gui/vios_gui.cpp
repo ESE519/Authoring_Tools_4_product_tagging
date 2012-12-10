@@ -12,6 +12,17 @@ int bound (int x, int l, int u){
     return x;
 }
 
+string num2strdigits(unsigned int num, unsigned int numdigits){
+    string digits;
+    digits.resize(numdigits);
+    int div=10;
+    for (int i=numdigits-1; i>=0; i--){
+        digits[i] = '0' + (num % div);
+        num/=div;
+    }
+    return digits;
+}
+
 QImage ViosGui::Mat2QImage(const Mat& mat)
 {
     // 8-bits unsigned, NO. OF CHANNELS=1
@@ -119,7 +130,6 @@ ViosGui::ViosGui(QWidget *parent) :
     train_path = "../train/";
     junk_path = "../train/junk/";
     train_recognizer_file = train_path + "train.csv";
-    ftrainwrite.open(train_recognizer_file.c_str(),ios::app);
     ifstream ftrainread(train_recognizer_file.c_str(),ifstream::in);
     system(("mkdir " + junk_path).c_str());
     class_label_file = train_path + "class_label.csv";
@@ -154,10 +164,9 @@ ViosGui::ViosGui(QWidget *parent) :
         getline(liness,path,';');
         getline(liness,label);
         clabel = atoi(label.c_str());
-        tmpI = imread(line,0);
+        tmpI = imread(path,0);
         train_img.push_back(tmpI);
         train_label.push_back(class_label[clabel]);
-        train_num_label.push_back(clabel);
     }
     ftrainread.close();
 }
@@ -417,17 +426,6 @@ void ViosGui::change_margins(double value)
     hline->setLine(1,y1,x2,y1);
 }
 
-string num2strdigits(unsigned int num, unsigned int numdigits){
-    string digits;
-    digits.resize(numdigits);
-    int div=10;
-    for (int i=numdigits-1; i>=0; i--){
-        digits[i] = '0' + (num % div);
-        num/=div;
-    }
-    return digits;
-}
-
 void ViosGui::select_image(){
     int idx;
     Mat tmp(recognizer.FACE_RECOGNIZE_SIZE,recognizer.FACE_RECOGNIZE_SIZE,CV_8UC1);
@@ -438,7 +436,7 @@ void ViosGui::select_image(){
                 break;
             }
         }
-        selected_img.copyTo(tmp);
+        cvtColor(selected_img,tmp,CV_BGR2GRAY);
         train_img.push_back(tmp);
         train_label.push_back(class_label[idx]);
         saved_flag = 1;
@@ -454,6 +452,9 @@ void ViosGui::discard_image(){
 void ViosGui::build_recognizer(){
     string filename;
     int idx;
+    system(("rm "+train_recognizer_file).c_str());
+    ftrainwrite.open(train_recognizer_file.c_str(),ios::app);
+    train_num_label.clear();
     vector < int > class_label_cnt;
     for (int i=0;i<class_label.size();i++){
         class_label_cnt.push_back(0);
@@ -471,6 +472,7 @@ void ViosGui::build_recognizer(){
         filename = train_path + class_label[idx] + "/" + class_label[idx] + num2strdigits(class_label_cnt[idx]-1,5) + ".jpg";
         imwrite(filename.c_str(),train_img[i]);
         ftrainwrite << filename << ";" << train_num_label[i] << endl;
+        //cout << filename << " " << train_img[i].rows << " "<< train_img[i].cols << endl;
     }
     ftrainwrite.close();
     recognizer.eigen_recognizer = createEigenFaceRecognizer(80,recognizer.EIGEN_THRESH);
@@ -483,6 +485,8 @@ void ViosGui::build_recognizer(){
     recognizer.eigen_recognizer->save(train_path + "train_eigen.xml");
     recognizer.fisher_recognizer->save(train_path + "train_fisher.xml");
     recognizer.lbph_recognizer->save(train_path + "train_lbph.xml");
+    ui->stat_label->clear();
+    ui->stat_label->setText("Finished training");
 }
 
 void ViosGui::set_slider()
