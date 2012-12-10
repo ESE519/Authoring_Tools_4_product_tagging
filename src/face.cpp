@@ -468,12 +468,11 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
   }
   return;
 }
-void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features, string classifier, string mode){
+bool FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features,bool slider_flag , string classifier, string mode){
   name.clear();
   label.clear();
   face_pos.clear();
   int N = face_pos.size(), Ni, num_features, displacement_x, displacement_y;
-  static int frame_count=0;
   vector <double> confidence;
   vector <float> err;
   vector <uchar> status;
@@ -487,14 +486,21 @@ void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
   else
     gray_img = img;
   
-  if (prev_img.channels() > 1) 
-    cvtColor(prev_img, prev_gray_img, CV_RGB2GRAY);
-  else
-    prev_gray_img = prev_img;
-  
+  cout << "slider_flag : "<< slider_flag << endl;
+  if (slider_flag == 1){
+    prev_img.release();
+    frame_count = 0;
+  }
+  else{
+    if (prev_img.channels() > 1) 
+      cvtColor(prev_img, prev_gray_img, CV_RGB2GRAY);
+    else
+      prev_gray_img = prev_img;
+  }
+  cout << "Frame Count : " << frame_count<< endl;  
   if (frame_count == 0){
     detect_face(face_pos, eye, gray_img, 1, mode);
-    recognize_face(name, confidence, label, face_pos, gray_img, classifier);
+    //recognize_face(name, confidence, label, face_pos, gray_img, classifier);
     N = face_pos.size();
     features.clear();
     features.resize(N);
@@ -505,7 +511,8 @@ void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
     roi.width = min(face_pos[i].width + 2*ROI_ALLOWANCE,gray_img.cols-roi.x-1);
     roi.height = min(face_pos[i].height + 2*ROI_ALLOWANCE,gray_img.rows-roi.y-1);
     if (frame_count != 0){
-      calcOpticalFlowPyrLK(prev_gray_img(roi),gray_img(roi),features[i],nfeatures,status,err,Size(10,10));
+      calcOpticalFlowPyrLK(prev_gray_img(roi),gray_img(roi),features[i],nfeatures,status,err,Size(50,50));
+      cout << nfeatures.size() << endl;
       Ni = status.size();
       displacement_x = 0;
       displacement_y = 0;
@@ -530,13 +537,15 @@ void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
       face_pos[i].y += displacement_y;
     }
     num_features = features[i].size();
-    if (num_features < KLT_MIN_FEATURES_PER_FACE){
+    if (num_features == 0){//KLT_MIN_FEATURES_PER_FACE){
       features[i].clear();
+      cout << "Resampling" << endl;
       goodFeaturesToTrack(gray_img(roi), features[i], KLT_MAX_FEATURES_PER_FACE, KLT_FEATURE_QUALITY, KLT_MIN_FEATURE_DIST);
     }
   }
   frame_count++;
-  if (frame_count == NUM_FRAMES_WITHOUT_DETECTION)
+  if (frame_count == 100000)//NUM_FRAMES_WITHOUT_DETECTION)
     frame_count = 0;
-  return;
+    cout << "Return Value : "<< !slider_flag << endl;
+  return (!slider_flag);
 }

@@ -615,6 +615,19 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
        <string>Video</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="mode_recognize">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>10</y>
+        <width>97</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Recognize</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="object">
      <attribute name="title">

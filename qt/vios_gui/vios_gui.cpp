@@ -127,6 +127,7 @@ ViosGui::ViosGui(QWidget *parent) :
     vline2->setPen(default_pen);
     hline->setPen(default_pen);
 
+    opencv_data_path = "../data/";
     train_path = "../train/";
     junk_path = "../train/junk/";
     train_recognizer_file = train_path + "train.csv";
@@ -289,10 +290,6 @@ void ViosGui::menu_decode(const QString & button_name)
 
 void ViosGui::update_image()
 {
-    detection_strength = 0;
-    detection_flag = 0;
-    saved_flag = 0;
-    Mat out1;
     if (frame_pos >= frame_count)
         frame_pos = frame_count - 1;
     else if (frame_pos < 0)
@@ -305,6 +302,33 @@ void ViosGui::update_image()
         QString tmp = image_names.at(frame_pos);
         image_cv = imread(input_path+"/"+tmp.toStdString());
     }
+    if (ui->mode_recognize->isChecked()){
+        recognizer.load(train_path+"train",class_label_file);
+        recognizer.detect_face(face_pos,eye,image_cv,1.2);
+        vector <string> frame_face_name;
+        vector <double> confidence;
+        vector <int> nlabel;
+        recognizer.recognize_face(frame_face_name,confidence,nlabel,face_pos,image_cv,"all");
+        recognizer.label_face(image_cv,frame_face_name,face_pos);
+        image_qt = Mat2QImage(image_cv);
+        scene->clear();
+        scene->addPixmap(QPixmap::fromImage(image_qt));
+        this->show();
+        if (frame_pos < frame_count - 1){
+            //frame_pos++;
+            //update_image();
+        }
+    }
+    else{
+        train_gui(image_cv);
+    }
+}
+
+void ViosGui::train_gui(Mat & image_cv){
+    detection_strength = 0;
+    detection_flag = 0;
+    saved_flag = 0;
+    Mat out1;
     recognizer.detect_face(face_pos,eye,image_cv);
     if (video_mode_load_flag == 1)
         frame_pos = cap.get(CV_CAP_PROP_POS_FRAMES);

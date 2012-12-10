@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Mon Dec 10 03:50:03 2012
+** Created: Mon Dec 10 05:46:41 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -77,6 +77,7 @@ public:
     QSlider *horizontalSlider;
     QRadioButton *mode_image;
     QRadioButton *mode_video;
+    QCheckBox *mode_recognize;
     QWidget *object;
     QMenuBar *menuBar;
     QMenu *menuViOS;
@@ -295,6 +296,9 @@ public:
         mode_video = new QRadioButton(face);
         mode_video->setObjectName(QString::fromUtf8("mode_video"));
         mode_video->setGeometry(QRect(540, 10, 71, 22));
+        mode_recognize = new QCheckBox(face);
+        mode_recognize->setObjectName(QString::fromUtf8("mode_recognize"));
+        mode_recognize->setGeometry(QRect(640, 10, 97, 22));
         tabwidget->addTab(face, QString());
         object = new QWidget();
         object->setObjectName(QString::fromUtf8("object"));
@@ -349,6 +353,7 @@ public:
         fwd_skip_button->setText(QApplication::translate("ViosGui", ">>", 0, QApplication::UnicodeUTF8));
         mode_image->setText(QApplication::translate("ViosGui", "Image", 0, QApplication::UnicodeUTF8));
         mode_video->setText(QApplication::translate("ViosGui", "Video", 0, QApplication::UnicodeUTF8));
+        mode_recognize->setText(QApplication::translate("ViosGui", "Recognize", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(face), QApplication::translate("ViosGui", "Face Recognition", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(object), QApplication::translate("ViosGui", "Object Detection", 0, QApplication::UnicodeUTF8));
         menuViOS->setTitle(QApplication::translate("ViosGui", "ViOS", 0, QApplication::UnicodeUTF8));

@@ -54,7 +54,7 @@ public:
     QString basestyle;
     vector <QString> style;
     vector <string> class_label;
-    string class_label_file, train_path, junk_path;
+    string class_label_file, train_path, junk_path, opencv_data_path;
     QRadioButton ** radio;
     QCheckBox ** check;
     int detection_strength;
@@ -68,6 +68,7 @@ private:
     void update_image();
     void load_data();
     void custom_style_sheet();
+    void train_gui(Mat & image_cv);
 
 private slots:
     void browse_files();

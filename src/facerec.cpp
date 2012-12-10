@@ -25,9 +25,9 @@
 #define MIN_FACE_SIZE 50
 #define MAX_FACE_SIZE 300
 #define FACE_SIZE_STEP 20
-#define REC_FACE_SIZE 40
-#define FISHER_THRESH 20
-#define EIGEN_THRESH 1400
+#define REC_FACE_SIZE 70
+#define FISHER_THRESH 85
+#define EIGEN_THRESH 1900
 #define LBPH_THRESH 70
 
 using namespace std;
@@ -39,7 +39,7 @@ vector <double> faceSize;
 vector <string> classNamesVec;
 int numSamples = 10, faceSampleCnt = 0, classId = 0, capFlag = 1, recFlag=0;
 FILE * fid,*fid1;
-char train_filename[25]="../train/train.csv", class_filename[25]="../train/class_names.csv";
+char train_filename[40]="../train/train.csv", class_filename[40]="../train/class_label.csv";
 Ptr<FaceRecognizer> fisherModel,eigenModel,LBPHModel;
 string mode="Recognize",classifier="majority",vidout="default";
 char className[20]="NotSpecified";
@@ -65,11 +65,13 @@ void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, 
     if (!file)
         throw std::exception();
     string line, path, classlabel;
+    Mat tmp;
     while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, path, separator);
         getline(liness, classlabel);
-        images.push_back(imread(path, 0));
+        tmp = imread(path, 0);
+        images.push_back(tmp);
         labels.push_back(atoi(classlabel.c_str()));
     }
 }
@@ -412,10 +414,11 @@ int main(int argc, char ** argv){
     fisherModel->train(images, labels);
     LBPHModel->train(images, labels);
     char cname[20];
-    int cid;
+    int cid=0;
     classNamesVec.resize(labels.size());
-    while (fscanf(fid1,"%s %d",cname,&cid) != EOF)
-      classNamesVec[cid]=string(cname);
+    while (fscanf(fid1,"%s",cname) != EOF){
+      classNamesVec[cid++]=string(cname);
+    }
 	}
 	if (!capFlag) {
 		DIR *dp;
