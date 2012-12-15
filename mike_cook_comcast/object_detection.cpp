@@ -1,7 +1,7 @@
-/*Object Detection for creating a xml annotation file*/
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 #define MIN_OBJ_SIZE 20
 #define MAX_OBJ_SIZE 200
@@ -9,10 +9,11 @@
 using namespace cv;
 using namespace std;
 
-FileStorage fs;
 CascadeClassifier cascade;
-
-void obj_detect(Mat &img,double scale = 1.1){
+ofstream fout;
+void obj_detect(vector <Rect> &out, Mat &img,double scale = 1.1){
+  out.clear();
+  Rect tmp;
   double t = 0;
   Point2f pt1,pt2;
   vector <Rect> object;
@@ -31,7 +32,6 @@ void obj_detect(Mat &img,double scale = 1.1){
   			                   Size(MAX_OBJ_SIZE, MAX_OBJ_SIZE));
   t = (double)cvGetTickCount() - t;
   //printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
-  fs << "num_obj" << (int)object.size();
   int cnt=0;
   for(vector<Rect>::const_iterator r = object.begin(); r != object.end(); r++) {
     pt1.x = r->x*scale;
@@ -39,12 +39,15 @@ void obj_detect(Mat &img,double scale = 1.1){
     pt2.x = (r->x + r->width)*scale;
     pt2.y = (r->y + r->height)*scale;
     rectangle(img, pt1, pt2, CV_RGB(255,0,0), 1, 8, 0);
-    fs << "obj" << "{";
-    fs << "x" << (int)pt1.x;
-    fs << "y" << (int)pt1.y;
-    fs << "width" << (int)r->width;
-    fs << "height" << (int)r->height;
-    fs << "}";
+    tmp.x = pt1.x;
+    tmp.y = pt2.y;
+    tmp.width = r->width*scale;
+    tmp.height = r->height*scale;
+    out.push_back(tmp);
+    //fout << " <o1_x>" << (int)pt1.x << "</o1_x>" << endl;
+    //fout << " <o1_y>" << (int)pt1.y << "</o1_y>" << endl;
+    //fout << " <o1_width>" << (int)r->width << "</o1_width>" << endl;
+    //fout << " <o1_height>" << (int)r->height << "</o1_height>" << endl;
     if(++cnt >= 5) break;
   }
   /*if (object.size() == 0){
@@ -59,6 +62,7 @@ void obj_detect(Mat &img,double scale = 1.1){
 }
 int main(int argc,char **argv){
   string input_file,output_file,classifier_file;
+  vector <Rect> out;
   Mat frame;
   for (int i=1;i<argc;i++){  
     if (strcmp(argv[i],"-i")==0)
@@ -74,22 +78,36 @@ int main(int argc,char **argv){
     cerr << "ERROR: Could not load classifier cascade" << endl;
     return -1;
   }
-  fs.open(output_file, FileStorage::WRITE); 
+  fout.open(output_file.c_str(),ofstream::out);
   VideoCapture cap(input_file);
   namedWindow("Object Detection",CV_WINDOW_NORMAL);
   int frame_count = 0;
+  fout << "<?xml version=\"1.0\"?>" << endl;
+  fout << "<data xmlns:mac=\"http://www.tvworks.com/tva/xml/ns/max/data-types\"" << endl;
+  fout << " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" << endl;
+  fout<<" xsi:noNamespaceSchemaLocation=\"light_trigger.xsd\">" << endl;
+  fout << "<object_detection_data>" << endl;
   while (1){
     cap >> frame;
     if (frame.empty())
       break;
-    fs << "frame" << "{";
-    fs << "frame_idx" << frame_count++;
-    obj_detect(frame);
-    fs << "}";
+    
+    obj_detect(out,frame);
+    if (out.size()>0){
+      fout << "<row time=\"" << (int)cap.get(CV_CAP_PROP_POS_MSEC)<< "\">" << endl;
+      for(int i=0;i<out.size();i++){
+        fout << " <o" <<i+1<< "_x>" << (int)out[i].x << "</o" <<i+1<< "_x>" << endl;
+        fout << " <o" <<i+1<< "_y>" << (int)out[i].y << "</o" <<i+1<< "_y>" << endl;
+        fout << " <o" <<i+1<< "_width>" << (int)out[i].width << "</o" <<i+1<< "_width>" << endl;
+        fout << " <o" <<i+1<< "_height>" << (int)out[i].height << "</o" <<i+1<< "_height>" << endl;
+      }
+      fout << "</row>" << endl;
+    }
     imshow("Object Detection",frame);
     if(waitKey(30) == 27)
       break;
   }
-  fs.release();
+  fout << "</object_detection_data>"<< endl;
+  fout << "</data>" << endl;
   return 0;
 }

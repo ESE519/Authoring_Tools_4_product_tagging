@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Mon Dec 10 05:46:41 2012
+** Created: Mon Dec 10 08:01:44 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -234,7 +234,8 @@ public:
         stat_label = new QLabel(selected_images);
         stat_label->setObjectName(QString::fromUtf8("stat_label"));
         stat_label->setGeometry(QRect(20, 260, 141, 81));
-        stat_label->setStyleSheet(QString::fromUtf8("background-color:rgb(255, 255, 255);"));
+        stat_label->setStyleSheet(QString::fromUtf8("background-color:rgb(255, 255, 255);\n"
+"border: 2px solid gray;"));
         graphicsView_frame = new QGraphicsView(face);
         graphicsView_frame->setObjectName(QString::fromUtf8("graphicsView_frame"));
         graphicsView_frame->setGeometry(QRect(20, 50, 640, 480));

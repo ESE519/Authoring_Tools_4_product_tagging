@@ -4,6 +4,7 @@
 
 using namespace face;
 
+// Clamp a value
 int bound (int x, int l, int u){
     if (x<l)
         x = l;
@@ -12,6 +13,7 @@ int bound (int x, int l, int u){
     return x;
 }
 
+// Convert a number to a string with appropriate number of digits
 string num2strdigits(unsigned int num, unsigned int numdigits){
     string digits;
     digits.resize(numdigits);
@@ -23,6 +25,7 @@ string num2strdigits(unsigned int num, unsigned int numdigits){
     return digits;
 }
 
+// Convert OpenCV Mat to QImage format
 QImage ViosGui::Mat2QImage(const Mat& mat)
 {
     // 8-bits unsigned, NO. OF CHANNELS=1
@@ -54,6 +57,8 @@ QImage ViosGui::Mat2QImage(const Mat& mat)
         return QImage();
     }
 } // MatToQImage()
+
+// Style sheets for detection strength indication
 void ViosGui::custom_style_sheet(){
     basestyle = "border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center; /* position at the top center */ padding: 0 3px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #CECECE, stop: 1 #FFFFFF);}";
     style.resize(3);
@@ -66,6 +71,7 @@ ViosGui::ViosGui(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ViosGui)
 {
+    // Load default settings for the ui
     ui->setupUi(this);
     video_step = 2*DEFAULT_VIDEO_STEP;
     image_step = 5;
@@ -84,6 +90,8 @@ ViosGui::ViosGui(QWidget *parent) :
     directory = QDir::current();
     image_filter << "*.jpg" << "*.jpeg" << "*.JPEG" << "*.JPG" << "*.png" << "*.PNG" << "*.bmp" << "*.BMP" << "*.tiff" << "*.TIFF";
     video_filter << "*.wmv" << "*.WMV" << "*.avi" << "*.AVI" << "*.flv" << "*.FLV" << "*.mp*" << "*.MP*" << "*.ts" << "*.TS";
+
+    // Signals and slots processing
     connect(ui->browse, SIGNAL(clicked()), this, SLOT(browse_files()));
 
     connect(ui->fwd_skip_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -114,6 +122,7 @@ ViosGui::ViosGui(QWidget *parent) :
     connect(ui->add_button, SIGNAL(clicked()), this, SLOT(add_labels()));
     connect(ui->delete_button, SIGNAL(clicked()), this, SLOT(delete_labels()));
 
+    // QGraphicsScene for display
     scene = new QGraphicsScene();
     scene_detected = new QGraphicsScene();
     scene_cropped = new QGraphicsScene();
@@ -127,6 +136,7 @@ ViosGui::ViosGui(QWidget *parent) :
     vline2->setPen(default_pen);
     hline->setPen(default_pen);
 
+    // File Processing
     opencv_data_path = "../data/";
     train_path = "../train/";
     junk_path = "../train/junk/";
@@ -177,6 +187,7 @@ ViosGui::~ViosGui()
     delete ui;
 }
 
+// Delete a training class label and all its data
 void ViosGui::delete_labels(){
     int tmpn = class_label.size();
     for (int i=0;i<class_label.size(); i++){
@@ -209,6 +220,7 @@ void ViosGui::delete_labels(){
     fout.close();
 }
 
+// Adds a training class label and creates appropriate directories for storage
 void ViosGui::add_labels(){
     string str = ui->label_editor->toPlainText().toStdString();
     stringstream sin(str);
@@ -235,6 +247,7 @@ void ViosGui::add_labels(){
     fout.close();
 }
 
+// Load video or image file and slider initializations
 void ViosGui::load_data()
 {
     if (ui->mode_video->isChecked()){
@@ -259,6 +272,7 @@ void ViosGui::load_data()
     }
 }
 
+// Decode the buttons pressed in the menu bar
 void ViosGui::menu_decode(const QString & button_name)
 {
     int step = 0;
@@ -288,6 +302,7 @@ void ViosGui::menu_decode(const QString & button_name)
     }
 }
 
+// Update the QGraphicsScene display appropriately for different modes
 void ViosGui::update_image()
 {
     if (frame_pos >= frame_count)
@@ -324,6 +339,7 @@ void ViosGui::update_image()
     }
 }
 
+// Training specific mode of gui and functionalities
 void ViosGui::train_gui(Mat & image_cv){
     detection_strength = 0;
     detection_flag = 0;
@@ -408,6 +424,7 @@ void ViosGui::train_gui(Mat & image_cv){
     }
 }
 
+// Margins functionality in the detection panel
 void ViosGui::show_margins()
 {
     if (ui->show_margins->checkState()){
@@ -450,6 +467,7 @@ void ViosGui::change_margins(double value)
     hline->setLine(1,y1,x2,y1);
 }
 
+// Training Specific functionalities
 void ViosGui::select_image(){
     int idx;
     Mat tmp(recognizer.FACE_RECOGNIZE_SIZE,recognizer.FACE_RECOGNIZE_SIZE,CV_8UC1);
@@ -513,6 +531,7 @@ void ViosGui::build_recognizer(){
     ui->stat_label->setText("Finished training");
 }
 
+// Menubar Specific functionalities
 void ViosGui::set_slider()
 {
     frame_pos = ui->horizontalSlider->value();

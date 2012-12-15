@@ -1,0 +1,57 @@
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mac="http://www.tvworks.com/tva/xml/ns/max/data-types"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" 
+    attributeFormDefault="unqualified">
+   
+	<xs:import namespace="http://www.tvworks.com/tva/xml/ns/max/data-types"
+		schemaLocation="http://developer.tva.tvworks.com/xml/ns/max/data-types-3.4.xsd" />
+
+  <xs:element name="data">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="object_detection_data" type="object_detection_data-type"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="rowType">
+    <xs:attribute name="time" type="xs:int" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="object_detection_data-type">
+    <xs:sequence>
+      <xs:element name="row" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="rowType">
+              <xs:sequence>
+        <xs:element name="o1_x" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o1_y" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o1_width" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o1_height" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o2_x" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o2_y" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o2_width" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o2_height" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o3_x" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o3_y" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o3_width" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o3_height" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o4_x" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o4_y" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o4_width" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o4_height" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o5_x" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o5_y" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o5_width" type="mac:uint16" minOccurs="0"/>
+				<xs:element name="o5_height" type="mac:uint16" minOccurs="0"/>
+		</xs:sequence>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
