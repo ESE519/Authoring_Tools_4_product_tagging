@@ -25,9 +25,9 @@
 #define MIN_FACE_SIZE 50
 #define MAX_FACE_SIZE 300
 #define FACE_SIZE_STEP 20
-#define REC_FACE_SIZE 40
-#define FISHER_THRESH 20
-#define EIGEN_THRESH 1400
+#define REC_FACE_SIZE 70
+#define FISHER_THRESH 85
+#define EIGEN_THRESH 1900
 #define LBPH_THRESH 70
 
 using namespace std;
@@ -39,7 +39,7 @@ vector <double> faceSize;
 vector <string> classNamesVec;
 int numSamples = 10, faceSampleCnt = 0, classId = 0, capFlag = 1, recFlag=0;
 FILE * fid,*fid1;
-char train_filename[25]="../train/train.csv", class_filename[25]="../train/class_names.csv";
+char train_filename[40]="../train/train.csv", class_filename[40]="../train/class_label.csv";
 Ptr<FaceRecognizer> fisherModel,eigenModel,LBPHModel;
 string mode="Recognize",classifier="majority",vidout="default";
 char className[20]="NotSpecified";
@@ -65,11 +65,13 @@ void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, 
     if (!file)
         throw std::exception();
     string line, path, classlabel;
+    Mat tmp;
     while (getline(file, line)) {
         stringstream liness(line);
         getline(liness, path, separator);
         getline(liness, classlabel);
-        images.push_back(imread(path, 0));
+        tmp = imread(path, 0);
+        images.push_back(tmp);
         labels.push_back(atoi(classlabel.c_str()));
     }
 }
@@ -79,7 +81,13 @@ void onTrackbarSlide(int value, void* userData=NULL){
 	cap.set(CV_CAP_PROP_POS_FRAMES,value);
 }
 
+vector <Rect> prev_face;
+vector <int> prev_label;
+int cntero=0;
 void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
+  cntero++;
+  vector <int> tempy;
+  vector <Rect> tempf;
   int bestFaceRadius = -1;
   Point pt1,pt2,center;
   double t = 0;
@@ -179,9 +187,47 @@ void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
         pt1.x = pt1.x;
         pt1.y = pt1.y - 7;
 	      putText(img,classNamesVec[prediction],pt1,CV_FONT_HERSHEY_SIMPLEX, 0.5, colors[1],1);
+	      Rect tempo;
+	      tempo.x = pt1.x;
+	      tempo.y = pt1.y+7;
+	      tempo.width = pt2.x - pt1.x;
+	      tempo.height = pt2.y - tempo.y;
+	      tempf.push_back(tempo);
+	      tempy.push_back(prediction);
       }
-      else
+      else{
+        cout << "got here" << prev_face.size() << endl;
+        for (int ii=0;ii<prev_label.size();ii++){
+          if (abs(pt1.x - prev_face[ii].x) < 100 && abs(pt1.x - prev_face[ii].y) < 100){
+           prediction = prev_label[ii];
+           break;
+          }
+        }
+        if (prediction >=0){
+        cout << "Success" << endl;
+          pt1.x = pt1.x;
+        pt1.y = pt1.y - 7;
+        rectangle(img, pt1, pt2, colors[1], 4, 8, 0);
+	      putText(img,classNamesVec[prediction],pt1,CV_FONT_HERSHEY_SIMPLEX, 0.5, colors[1],1);
+	      	      Rect tempo;
+	      tempo.x = pt1.x;
+	      tempo.y = pt1.y+7;
+	      tempo.width = pt2.x - pt1.x;
+	      tempo.height = pt2.y - tempo.y;
+	      tempf.push_back(tempo);
+	      tempy.push_back(prediction);
+        }
+        else
         rectangle(img, pt1, pt2, colors[2], 1, 8, 0);  
+      }
+      if (tempf.size() != 0 || cntero%20 == 0){
+       prev_label.clear();
+    prev_face.clear();
+    for (int ii=0;ii<tempf.size();ii++){
+      prev_label.push_back(tempy[ii]);
+      prev_face.push_back(tempf[ii]);
+    }
+    }
     }
 		else if (mode == "contidetect"){			
       pt1.x = center.x - radius;
@@ -191,6 +237,7 @@ void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
 			rectangle(img, pt1, pt2, colors[2], 2, 8, 0);
 		}
   }
+   
   if (mode == "detect" && bestFaceRadius > 0){
     int flag = 1;
     for (int i=0; i < faceSampleCnt; i++){
@@ -246,6 +293,7 @@ void faceDetect(Mat& img,CascadeClassifier& cascade,double scale=1){
 	}
 	if (!capFlag)
 		waitKey(50);
+  
 }
 int main(int argc, char ** argv){
   int  devId = 0, dflag=0,nflag=0;
@@ -412,10 +460,11 @@ int main(int argc, char ** argv){
     fisherModel->train(images, labels);
     LBPHModel->train(images, labels);
     char cname[20];
-    int cid;
+    int cid=0;
     classNamesVec.resize(labels.size());
-    while (fscanf(fid1,"%s %d",cname,&cid) != EOF)
-      classNamesVec[cid]=string(cname);
+    while (fscanf(fid1,"%s",cname) != EOF){
+      classNamesVec[cid++]=string(cname);
+    }
 	}
 	if (!capFlag) {
 		DIR *dp;

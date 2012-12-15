@@ -1,3 +1,4 @@
+/* Converts a video to a set of images for training */
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv/cv.h>

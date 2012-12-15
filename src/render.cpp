@@ -1,3 +1,4 @@
+/* Rendering Functions */
 #include "render.h"
 
 using namespace cv;

@@ -71,19 +71,20 @@ namespace face{
 	
 	class FaceTracker: public FaceRecognize{
 	  public:
-	    int NUM_FRAMES_WITHOUT_DETECTION, KLT_MAX_FEATURES_PER_FACE, KLT_MIN_FEATURES_PER_FACE, ROI_ALLOWANCE;
+	    int NUM_FRAMES_WITHOUT_DETECTION, KLT_MAX_FEATURES_PER_FACE, KLT_MIN_FEATURES_PER_FACE, ROI_ALLOWANCE, frame_count;
 	    double KLT_FEATURE_QUALITY, KLT_MIN_FEATURE_DIST;
 		public:
 			FaceTracker():FaceRecognize(){
 			  NUM_FRAMES_WITHOUT_DETECTION = 10;
-			  KLT_MAX_FEATURES_PER_FACE = 20;
-			  KLT_MIN_FEATURES_PER_FACE = 10;
+			  KLT_MAX_FEATURES_PER_FACE = 50;
+			  KLT_MIN_FEATURES_PER_FACE = 2;
 			  KLT_FEATURE_QUALITY = 0.01;
-			  KLT_MIN_FEATURE_DIST = 4;
-			  ROI_ALLOWANCE = 10;
+			  KLT_MIN_FEATURE_DIST = 2;
+			  ROI_ALLOWANCE = 20;
+			  frame_count = 0;
 			}
 			//~FaceTracker();
-			void klt_track_face(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features, string classifier = "fisher", string mode = "front");
+			bool klt_track_face(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features, bool slider_flag = 0, string classifier = "fisher", string mode = "front");
 	};
 }
 
