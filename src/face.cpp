@@ -181,13 +181,14 @@ void FaceDetect::draw_face(vector <Rect> &face_pos, vector <struct Eye> & eye_po
   return;
 }
 
-void FaceRecognize::load(string file_recognizer, string file_class){
-  eigen_recognizer = createEigenFaceRecognizer();
+void FaceRecognize::load(string file_recognizer, string file_class, string file_train){
+  
+  /*eigen_recognizer = createEigenFaceRecognizer();
   fisher_recognizer = createFisherFaceRecognizer();
   lbph_recognizer = createLBPHFaceRecognizer();
   eigen_recognizer->load(file_recognizer + "_eigen.xml");
   fisher_recognizer->load(file_recognizer + "_fisher.xml");
-  lbph_recognizer->load(file_recognizer + "_lbph.xml");
+  lbph_recognizer->load(file_recognizer + "_lbph.xml");*/
   
   ifstream file(file_class.c_str(), ifstream::in);
   if (!file)
@@ -200,6 +201,30 @@ void FaceRecognize::load(string file_recognizer, string file_class){
     getline(liness, class_label);  
     face_name.push_back(name);
   }
+  file.close();
+  
+  file.open(file_train.c_str(), ifstream::in);
+  if (!file)
+    cerr << "No such file " + file_train << endl;
+  string path;
+  Mat tmp;
+  vector <Mat> images;
+  vector <int> labels;
+  while (getline(file, line)) {
+    stringstream liness(line);
+    getline(liness, path, separator);
+    getline(liness, class_label);
+    tmp = imread(path, 0);
+    images.push_back(tmp);
+    labels.push_back(atoi(class_label.c_str()));
+  }
+  file.close();
+  eigen_recognizer = createEigenFaceRecognizer(80,EIGEN_THRESH);	  
+  fisher_recognizer = createFisherFaceRecognizer(0,FISHER_THRESH);	  
+  lbph_recognizer = createLBPHFaceRecognizer(1,8,8,8,LBPH_THRESH);	 
+  eigen_recognizer->train(images, labels);
+  fisher_recognizer->train(images, labels);
+  lbph_recognizer->train(images, labels);
   return;
 }
 
@@ -279,8 +304,13 @@ void FaceRecognize::label_face(Mat &img, vector <string> &label, vector <Rect> &
 	  pt1.y = face_pos[i].y;
 	  pt2.x = face_pos[i].x + face_pos[i].width;
 	  pt2.y = face_pos[i].y + face_pos[i].height;
-	  rectangle(img, pt1, pt2, CV_RGB(0,255,0), 2, 8, 0);
-	  putText(img, label[i], txtpt, CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0,255,0), 1);
+	  if (label[i] == "Unknown"){
+	    rectangle(img, pt1, pt2, CV_RGB(0,0,255), 1, 8, 0);
+	  }
+	  else{
+	    rectangle(img, pt1, pt2, CV_RGB(0,255,0), 2, 8, 0);
+	    putText(img, label[i], txtpt, CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0,255,0), 1);
+    }
 	}
 	return;
 }
@@ -548,4 +578,71 @@ bool FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
     frame_count = 0;
     cout << "Return Value : "<< !slider_flag << endl;
   return (!slider_flag);
+}
+
+void FaceTracker::camshift_track_face(vector <string> &name, vector <string> &prev_name, vector <int> &label, vector <int> &prev_label, vector <double> &confidence, vector <double> &prev_confidence, vector <Rect> &face_pos, vector <Rect> &prev_face_pos, Mat &img, Mat &prev_img, vector <struct Eye> eye, string classifier, string mode){
+  Mat gray_img,hsv_img,prev_hsv_img;
+  name.clear();
+  label.clear();
+  face_pos.clear();
+  cvtColor(img,hsv_img,CV_BGR2HSV);
+  if (!prev_img.empty())
+    cvtColor(prev_img,prev_hsv_img,CV_BGR2HSV);
+  int hbins = 30;
+  int histSize[] = {hbins};
+  // hue varies from 0 to 179, see cvtColor
+  float hranges[] = { 0, 180 };
+  const float* ranges[] = { hranges};
+  Mat hist,backProject;
+  // we compute the histogram from the 0-th and 1-st channels
+  int channels[] = {0};
+  
+  if (img.channels() > 1) 
+    cvtColor(img, gray_img, CV_RGB2GRAY);
+  else
+    gray_img = img;
+  detect_face(face_pos, eye, gray_img, 1, mode);
+  recognize_face(name, confidence, label, face_pos, gray_img, classifier);
+  int N = face_pos.size();
+  for (int i=0; i<face_pos.size(); i++){
+    for (int j=0; j<prev_face_pos.size(); j++){
+      if (prev_label[j]!=-1 && !((prev_face_pos[j].x + prev_face_pos[j].width < face_pos[i].x) || (prev_face_pos[j].x > face_pos[i].x + face_pos[i].width) || (prev_face_pos[j].y + prev_face_pos[j].height < face_pos[i].y) || (prev_face_pos[j].y > face_pos[i].y + face_pos[i].height))) {
+          //if (confidence[i] > prev_confidence[j] || label[i] == -1){
+            label[i] = prev_label[j];
+            name[i]= prev_name[j];
+            cout << "label : " << label[i] << " prev_label = " << prev_label[j] << endl;
+            cout << "name : " + name[i] + " prev_name = " + prev_name[j] << endl;
+          //}
+      }
+    }
+  }         
+  /*for (int i=0; i<prev_face_pos.size(); i++){
+    int ocnt=0;
+    for (int j=0; j<face_pos.size(); j++){
+      if (prev_face_pos[i].x + prev_face_pos[i].width < face_pos[j].x || prev_face_pos[i].x > face_pos[j].x + face_pos[j].width
+            || prev_face_pos[i].y + prev_face_pos[i].height < face_pos[j].y || prev_face_pos[i].y > face_pos[j].y + face_pos[j].height){
+         ocnt++;
+      }
+      else{
+        if (prev_label[i]!=-1)
+          label[j]= prev_label[i];
+      }
+    }
+    if(ocnt == N){
+      Mat hsv;
+      hsv=prev_hsv_img(prev_face_pos[i]);
+      calcHist(&hsv , 1, channels, Mat(), hist, 1, histSize, ranges, true, false );
+      hsv = hsv_img(prev_face_pos[i]);
+      calcBackProject(&hsv,1,channels,hist,backProject,ranges);
+      threshold(backProject,backProject,0.9,1,THRESH_BINARY);
+      Scalar tsum = sum(backProject);
+      float prob=(float)tsum(0)/(backProject.rows * backProject.cols);
+      if (prob > 0.9){
+        cout << "New Addition" << endl;
+        face_pos.push_back(prev_face_pos[i]);       
+        label.push_back(prev_label[i]);
+        name.push_back(prev_name[i]);
+      }
+    }
+  }*/
 }

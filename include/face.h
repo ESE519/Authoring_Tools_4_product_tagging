@@ -56,15 +56,15 @@ namespace face{
 	    Ptr<FaceRecognizer> eigen_recognizer, fisher_recognizer, lbph_recognizer;
 		public:
 			FaceRecognize():FaceDetect(){
-			  FACE_RECOGNIZE_SIZE = 50;
+			  FACE_RECOGNIZE_SIZE = 70;
         EYE_LEVEL = FACE_RECOGNIZE_SIZE/3;
-        EIGEN_THRESH = 1400;
-        FISHER_THRESH = 20;
-        LBPH_THRESH = 45;
+        EIGEN_THRESH = 2000;
+        FISHER_THRESH = 90;
+        LBPH_THRESH = 70;
 			};
 			//~FaceRecognize();
 			void train(string train_file, string class_file, string recognizer_file);
-			void load(string file_recognizer, string file_class);
+			void load(string file_recognizer, string file_class, string file_train);
 			void recognize_face(vector <string> &name, vector <double> &confidence, vector <int> &label, vector <Rect> &face_pos, Mat &img, string classifier = "fisher");
 			void label_face(Mat &img, vector <string> &label, vector <Rect> &face_pos);
 	};
@@ -85,6 +85,7 @@ namespace face{
 			}
 			//~FaceTracker();
 			bool klt_track_face(vector <string> &name, vector <int> &label, vector <Rect> &face_pos, Mat &img, Mat &prev_img, vector < vector <Point2f> > &features, bool slider_flag = 0, string classifier = "fisher", string mode = "front");
+			void camshift_track_face(vector <string> &name, vector <string> &prev_name, vector <int> &label, vector <int> &prev_label, vector <double> &confidence, vector <double> &prev_confidence, vector <Rect> &face_pos, vector <Rect> &prev_face_pos, Mat &img, Mat &prev_img, vector <struct Eye> eye, string classifier = "fisher", string mode = "front");
 	};
 }
 

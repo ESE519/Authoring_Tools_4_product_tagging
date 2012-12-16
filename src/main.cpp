@@ -132,7 +132,8 @@ int main(int argc, char ** argv){
         getline(liness,vidout,'.');
         getline(liness,extn);
         vidout = vidout + "_with_face_tag." + extn;
-        vidwriter.open(vidout,cap.get(CV_CAP_PROP_FOURCC),cap.get(CV_CAP_PROP_FPS),Size((int)cap.get(CV_CAP_PROP_FRAME_WIDTH),(int)cap.get(CV_CAP_PROP_FRAME_HEIGHT)));
+        waitKey(0);
+        vidwriter.open(vidout.c_str(),CV_FOURCC('P','I','M','1'),cap.get(CV_CAP_PROP_FPS),Size((int)cap.get(CV_CAP_PROP_FRAME_WIDTH),(int)cap.get(CV_CAP_PROP_FRAME_HEIGHT)));
         write_flag = 1;
       }
       while (1) {
@@ -180,18 +181,21 @@ int main(int argc, char ** argv){
         cap.open(input_path);
       else
         cap.open(0);
+      
       Mat frame,gray_frame,prev_frame;
       string class_file, train_file, recognizer_file;
       class_file = recognizer_path + "_class.csv";
-      //f.load(recognizer_path,class_file);
-      vector <string> name;
-      vector <double> confidence;
-      vector <int> label;
-      vector <Rect> face_pos;
+      train_file = recognizer_path + "_train.csv";
+      f.load(recognizer_path,class_file,train_file);
+      vector <string> name, prev_name;
+      vector <double> confidence, prev_confidence;
+      vector <int> label, prev_label;
+      vector <Rect> face_pos,prev_face_pos;
       vector <struct Eye> eye;
       vector < vector <Point2f> > features;
       string vidout,extn;
       int write_flag = 0;
+      cout << input_type << " " << output_type << endl;
       if (input_type == "video" && output_type == "record"){
         stringstream liness(input_path);
         getline(liness,vidout,'.');
@@ -204,7 +208,6 @@ int main(int argc, char ** argv){
       namedWindow("frame",CV_WINDOW_NORMAL);
 			createTrackbar("pos","frame",&pos,totalNumFrames,onTrackbarSlide2);
 			int prev_pos = 0;
-			cout << "Hello " << endl;
       while (1){
         cap >> frame;
         if (frame.empty())
@@ -216,10 +219,15 @@ int main(int argc, char ** argv){
         else 
           slider_flag=0;
         prev_pos = pos;
-        f.klt_track_face(name, label, face_pos, frame, prev_frame, features, slider_flag);
+        f.camshift_track_face(name, prev_name, label, prev_label, confidence, prev_confidence, face_pos, prev_face_pos, frame,prev_frame, eye);
         frame.copyTo(prev_frame);
-        //f.label_face(frame, name, face_pos);
-        for (int i=0; i<features.size();i++){
+        prev_face_pos = face_pos;
+        prev_label = label;
+        prev_name = name;
+        prev_confidence = confidence;
+        //f.draw_face(face_pos,eye,frame);
+        f.label_face(frame, name, face_pos);
+        /*for (int i=0; i<features.size();i++){
           for (int j=0; j<features[i].size();j++){
             Point2f tmp;
             tmp.x = face_pos[i].x + features[i][j].x;
@@ -227,7 +235,7 @@ int main(int argc, char ** argv){
             rectangle(frame,face_pos[i],CV_RGB(255,0,0),1,8,0);
             circle(frame, tmp, 2, CV_RGB(0,255,0), 1, 8, 0);
           }
-        }
+        }*/
         imshow("frame",frame);
         setTrackbarPos("pos","frame",++pos);
         if (write_flag)
