@@ -17,5 +17,6 @@ CMakeFiles
 *.mpeg
 *.mpg
 *.mp*
+*.ts
 *.pro.user*
 *fuse*

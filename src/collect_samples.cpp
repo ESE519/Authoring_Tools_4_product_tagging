@@ -1,3 +1,4 @@
+/* File for gather training images */
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv/cv.h>
@@ -14,10 +15,12 @@ using namespace std;
 int pos=0;
 VideoCapture cap;
 
+// Callback function for slidebar
 void onTrackbarSlide(int value, void* userData=NULL){
   value = pos;
 	cap.set(CV_CAP_PROP_POS_FRAMES,value);
 }
+
 int main(int argc, char ** argv){
   char ch;
   int totalNumFrames;

@@ -4,6 +4,10 @@
 using namespace face;
 
 VideoCapture cap1;
+
+// See the header file for function usage
+
+// Callback function for slider in video
 void onTrackbarSlide(int pos, void* userData=NULL){
   cap1.set(CV_CAP_PROP_POS_FRAMES,pos);
 }
@@ -44,12 +48,14 @@ void Face::align_face(Mat &out, Mat &img, struct Eye eye, float offset_x, float 
     dist_eyes = sqrt(diffx*diffx + diffy*diffy);
     dist_ref = sz.width - 2.0*offset_x;
     scale = dist_eyes/dist_ref;
+
     // Find Affine Parameters
     Point2f center = eye.right_pos;
     Mat rot_mat(2,3,CV_32FC1);
     Mat transformed_img,tmp;
     rot_mat = getRotationMatrix2D(center, rotation_angle, 1);
     warpAffine(img,transformed_img,rot_mat,img.size(),INTER_CUBIC);
+
     // Crop Transformed Image
     Rect crop;
     Point2f pt1,pt2;
@@ -62,6 +68,8 @@ void Face::align_face(Mat &out, Mat &img, struct Eye eye, float offset_x, float 
     crop.width = pt2.x - pt1.x; 
     crop.height = pt2.y - pt1.y;
     tmp = transformed_img(crop);
+
+    // Resize face to appropriate size
     resize(tmp,out,sz, 0, 0, INTER_LINEAR);
   }
 }
@@ -89,6 +97,8 @@ double FaceDetect::detect_face(vector <Rect> &face_pos, vector <struct Eye> &eye
                                   
   int cnt = 0;
   int i=0;
+
+  // Prune detected face based on eye level, aspect ratio, size, etc.
   for(vector <Rect>::const_iterator r = face_pos.begin(); r != face_pos.end(); r++,i++){
     aspect_ratio = (double)(r->width)/r->height;
     if (aspect_ratio > 0.75 && aspect_ratio < 1.3){
@@ -115,6 +125,7 @@ double FaceDetect::detect_face(vector <Rect> &face_pos, vector <struct Eye> &eye
     }
   }
   
+  // Get frame rate of detection
   tt = (double)getTickCount() - tt;
   dt = tt/((double)getTickFrequency());
   //cout << "Face Detection time = " << tt/((double)getTickFrequency()*1000)<< " ms" << endl;
@@ -132,10 +143,13 @@ void FaceDetect::detect_eyes(struct Eye &eye_pos, Mat &img){
                                   (0 | CV_HAAR_SCALE_IMAGE), 
                                   Size(MIN_EYE_DETECT_SIZE, MIN_EYE_DETECT_SIZE),
                                   Size(MAX_EYE_DETECT_SIZE, MAX_EYE_DETECT_SIZE));
+  int img_half_level = scaled_img.rows/2;
   for(vector <Rect>::const_iterator r = eye_objects.begin(); r != eye_objects.end(); r++){
     radius = 0.25*(r->width + r->height);
     center.x = r->x + r->width*0.5;
     center.y = r->y + r->height*0.5;
+    if (center.y > img_half_level)
+        continue;
     if (radius > radius1){
       radius2 = radius1;
       center2.x = center1.x;
@@ -150,21 +164,44 @@ void FaceDetect::detect_eyes(struct Eye &eye_pos, Mat &img){
       center2.y = center.y;
     }
   }
-  if (center1.x < center2.x){
-    eye_pos.left_pos.x = center2.x/scale;
-    eye_pos.left_pos.y = center2.y/scale;
-    eye_pos.left_radius = radius2/scale;
-    eye_pos.right_pos.x = center1.x/scale;
-    eye_pos.right_pos.y = center1.y/scale;
-    eye_pos.right_radius = radius1/scale;
+
+  // Assign eye to left or right appropriately
+  int image_width_half = scaled_img.cols/2;
+  if (radius2 <= 0){
+      if (center1.x < image_width_half){
+        eye_pos.left_pos.x = center2.x/scale;
+        eye_pos.left_pos.y = center2.y/scale;
+        eye_pos.left_radius = radius2/scale;
+        eye_pos.right_pos.x = center1.x/scale;
+        eye_pos.right_pos.y = center1.y/scale;
+        eye_pos.right_radius = radius1/scale;
+      }
+      else {
+        eye_pos.left_pos.x = center1.x/scale;
+        eye_pos.left_pos.y = center1.y/scale;
+        eye_pos.left_radius = radius1/scale;
+        eye_pos.right_pos.x = center2.x/scale;
+        eye_pos.right_pos.y = center2.y/scale;
+        eye_pos.right_radius = radius2/scale;
+      }
   }
-  else {
-    eye_pos.left_pos.x = center1.x/scale;
-    eye_pos.left_pos.y = center1.y/scale;
-    eye_pos.left_radius = radius1/scale;
-    eye_pos.right_pos.x = center2.x/scale;
-    eye_pos.right_pos.y = center2.y/scale;
-    eye_pos.right_radius = radius2/scale;
+  else{
+      if (center1.x < center2.x){
+        eye_pos.left_pos.x = center2.x/scale;
+        eye_pos.left_pos.y = center2.y/scale;
+        eye_pos.left_radius = radius2/scale;
+        eye_pos.right_pos.x = center1.x/scale;
+        eye_pos.right_pos.y = center1.y/scale;
+        eye_pos.right_radius = radius1/scale;
+      }
+      else {
+        eye_pos.left_pos.x = center1.x/scale;
+        eye_pos.left_pos.y = center1.y/scale;
+        eye_pos.left_radius = radius1/scale;
+        eye_pos.right_pos.x = center2.x/scale;
+        eye_pos.right_pos.y = center2.y/scale;
+        eye_pos.right_radius = radius2/scale;
+      }
   }
   return;
 }
@@ -189,7 +226,19 @@ void FaceDetect::draw_face(vector <Rect> &face_pos, vector <struct Eye> & eye_po
   return;
 }
 
+void FaceDetect::draw_eyes(vector <struct Eye> & eye_pos, Mat &img){
+  for(int i=0; i<eye_pos.size(); i++){
+    if (eye_pos[i].left_radius > 0)
+        circle(img, eye_pos[i].left_pos, eye_pos[i].left_radius, CV_RGB(0,0,255), 1, 8, 0);
+    if (eye_pos[i].right_radius > 0)
+        circle(img, eye_pos[i].right_pos, eye_pos[i].right_radius, CV_RGB(0,0,255), 1, 8, 0);
+  }
+  return;
+}
+
 void FaceRecognize::load(string file_recognizer, string file_class){
+
+  // Load Saved Face Recognition Classifiers
   eigen_recognizer = createEigenFaceRecognizer();
   fisher_recognizer = createFisherFaceRecognizer();
   lbph_recognizer = createLBPHFaceRecognizer();
@@ -197,6 +246,7 @@ void FaceRecognize::load(string file_recognizer, string file_class){
   fisher_recognizer->load(file_recognizer + "_fisher.xml");
   lbph_recognizer->load(file_recognizer + "_lbph.xml");
   
+  // Load corresponding face labels
   ifstream file(file_class.c_str(), ifstream::in);
   if (!file)
     throw std::exception();
@@ -234,6 +284,7 @@ void FaceRecognize::recognize_face(vector <string> &name, vector <double> &confi
     label.push_back(-1);
     confidence.push_back(-1);
     
+    // Predict using different classifiers
     if (classifier == "eigen" || classifier == "majority" || classifier == "all")
       eigen_recognizer->predict(scaled_img,eigen_prediction,eigen_confidence);
     if (classifier == "fisher" || classifier == "majority" || classifier == "all")
@@ -241,6 +292,7 @@ void FaceRecognize::recognize_face(vector <string> &name, vector <double> &confi
     if (classifier == "lbph" || classifier == "majority" || classifier == "all")
       lbph_recognizer->predict(gray_img(face_pos[i]),lbph_prediction,lbph_confidence);
     
+    // Decide which classifiers to use
     if (classifier == "eigen"){
       label[i] = eigen_prediction;
       confidence[i] = eigen_confidence;
@@ -315,7 +367,7 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
   ifstream chkfile_orig((recognizer_file + "_orig.csv").c_str(), ifstream::in);
   ifstream chkfile_resized((recognizer_file + "_resized.csv").c_str(), ifstream::in);
   
-  
+  // Create directories for putting train images
   if (!filec)
     throw std::exception();
   char separator = ';';  
@@ -333,6 +385,7 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
     system(cmd.c_str());
   }
   
+  // Load saved cropped images for building a classifier
   string label;
   vector <int> labels;
   vector <Mat> images,orig_images;
@@ -354,6 +407,7 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
     }
   }
   else{
+    // Train from a set of images
     if (textn == "csv"){
       ifstream file(train_file.c_str(), ifstream::in);
       ofstream fout_orig((recognizer_file + "_orig.csv").c_str(), ofstream::out);
@@ -413,6 +467,7 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
         }
       }
     }
+    // Train from video
     else{
       cap1.open(train_file);
       Mat frame,frame_gray;
@@ -461,13 +516,16 @@ void FaceRecognize::train(string train_file, string class_file, string recognize
         cap1.set(CV_CAP_PROP_POS_FRAMES,pos);
       }
     }
+
+    // Create eigen, fisher and lbph classifiers
     eigen_recognizer = createEigenFaceRecognizer(80,EIGEN_THRESH);	  
     fisher_recognizer = createFisherFaceRecognizer(0,FISHER_THRESH);	  
     lbph_recognizer = createLBPHFaceRecognizer(1,8,8,8,LBPH_THRESH);	 
     eigen_recognizer->train(images, labels);
     fisher_recognizer->train(images, labels);
     lbph_recognizer->train(orig_images, labels); 
-  
+
+    // Save classifiers as xml files
     eigen_recognizer->save(recognizer_file + "_eigen.xml");
     fisher_recognizer->save(recognizer_file + "_fisher.xml");
     lbph_recognizer->save(recognizer_file + "_lbph.xml");
@@ -500,6 +558,7 @@ void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
   else
     prev_gray_img = prev_img;
   
+  // Find features every set number of frames
   if (frame_count == 0){
     detect_face(face_pos, eye, gray_img, 1, mode);
     recognize_face(name, confidence, label, face_pos, gray_img, classifier);
@@ -512,6 +571,8 @@ void FaceTracker::klt_track_face(vector <string> &name, vector <int> &label, vec
     roi.y = max(face_pos[i].y - ROI_ALLOWANCE,0);
     roi.width = min(face_pos[i].width + 2*ROI_ALLOWANCE,gray_img.cols-roi.x-1);
     roi.height = min(face_pos[i].height + 2*ROI_ALLOWANCE,gray_img.rows-roi.y-1);
+
+    // Track features using optical flow
     if (frame_count != 0){
       calcOpticalFlowPyrLK(prev_gray_img(roi),gray_img(roi),features[i],nfeatures,status,err,Size(10,10));
       Ni = status.size();

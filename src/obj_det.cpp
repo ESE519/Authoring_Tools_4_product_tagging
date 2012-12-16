@@ -1,3 +1,4 @@
+/* Object detection for processing PASCAL dataset files */
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv/cv.h>
