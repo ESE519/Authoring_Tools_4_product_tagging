@@ -36,7 +36,7 @@ public:
     // C++ datatype members
     int video_step, image_step, frame_pos,frame_count, num_face_detections, detection_strength;
     bool video_mode_load_flag, image_mode_load_flag, obj_image_load_flag, obj_video_load_flag, detection_flag, saved_flag;
-    string input_path, train_recognizer_file, class_label_file, train_path, junk_path, opencv_data_path;
+    string input_path,obj_input_path, train_recognizer_file, class_label_file, train_path, junk_path, opencv_data_path;
     vector <int> train_num_label;
     vector <string> class_label, train_label;
     ofstream ftrainwrite;
@@ -77,6 +77,7 @@ private:
     void obj_img_update();
     void update_image();
     void load_data();
+    void obj_load_data();
     void custom_style_sheet();
     void train_gui(Mat & image_cv);
 
@@ -85,6 +86,7 @@ signals:
     void map_buttons(const QString &);
 
 private slots:
+    void obj_browse_files();
     void browse_files();
     void change_skip_step();
     void menu_decode(const QString &);

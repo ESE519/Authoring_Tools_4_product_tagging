@@ -73,6 +73,8 @@ ViosGui::ViosGui(QWidget *parent) :
 {
     // Load default settings for the ui
     ui->setupUi(this);
+    ui->mode_video->setChecked(1);
+    ui->obj_vid_button->setChecked(1);
     video_step = 2*DEFAULT_VIDEO_STEP;
     image_step = 5;
     signalMapper = new QSignalMapper(this);
@@ -82,10 +84,8 @@ ViosGui::ViosGui(QWidget *parent) :
     active_pen.setJoinStyle(Qt::RoundJoin);
     active_pen.setWidth(2);
     custom_style_sheet();
-    cout<<"hello";
     ui->selected_images->setStyleSheet(style[0]);
-    ui->mode_video->setChecked(1);
-    ui->obj_vid_button->setChecked(1);
+
     video_mode_load_flag = 0;
     image_mode_load_flag = 0;
     detection_strength = 0;
@@ -95,7 +95,7 @@ ViosGui::ViosGui(QWidget *parent) :
 
     // Signals and slots processing
     connect(ui->browse, SIGNAL(clicked()), this, SLOT(browse_files()));
-    connect(ui->obj_browse, SIGNAL(clicked()), this, SLOT(browse_files()));
+    connect(ui->obj_browse, SIGNAL(clicked()), this, SLOT(obj_browse_files()));
     connect(ui->fwd_skip_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(ui->fwd_skip_button, QString::fromStdString("fwd_skip"));
     connect(ui->prev_skip_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -285,7 +285,9 @@ void ViosGui::load_data()
         video_mode_load_flag = 0;
         update_image();
     }
-    else if(ui->obj_vid_button->isChecked()){
+}
+void ViosGui::obj_load_data(){
+    if(ui->obj_vid_button->isChecked()){
         cap.open(input_path);
         frame_count = cap.get(CV_CAP_PROP_FRAME_COUNT);
         frame_pos = 0;
@@ -301,12 +303,12 @@ void ViosGui::load_data()
         frame_count = image_names.size();
         ui->obj_slider->setMaximum(frame_count-1);
         ui->obj_slider->setTracking(1);
-        image_mode_load_flag = 1;
-        video_mode_load_flag = 0;
-        update_image();
+        obj_video_load_flag = 1;
+        obj_image_load_flag = 0;
         obj_img_update();
     }
 }
+
 
 // Decode the buttons pressed in the menu bar
 void ViosGui::menu_decode(const QString & button_name)
@@ -387,7 +389,7 @@ void ViosGui::obj_img_update(){
     }
     else {
         QString tmp = image_names.at(frame_pos);
-        image_cv = imread(input_path+"/"+tmp.toStdString());
+        image_cv = imread(obj_input_path+"/"+tmp.toStdString());
     }
     ui->obj_slider->setValue(frame_pos);
     image_qt = Mat2QImage(image_cv);
@@ -609,28 +611,41 @@ void ViosGui::browse_files(){
         if (directory.entryList().size()>0)
             flag = 1;
     }
-    else if(ui->mode_video){
+    else{
         // select a file using file dialog
         directory.setNameFilters(video_filter);
         path = QFileDialog::getOpenFileName(this, tr("Browse to add"), directory.path());
         flag = directory.match(video_filter,path);
     }
-    else if(ui->obj_img_button){
-        directory.setNameFilters(image_filter);
-        path = QFileDialog::getExistingDirectory(this, tr("Browse to add"), directory.path());
-        if (directory.entryList().size()>0)
-            flag = 1;
-    }
-    else if(ui->obj_vid_button){
-        directory.setNameFilters(video_filter);
-        path = QFileDialog::getOpenFileName(this, tr("Browse to add"), directory.path());
-        flag = directory.match(video_filter,path);
-    }
-        if (path!="" && flag){
+    if (path!="" && flag){
         directory.setPath(path);
         input_path = path.toStdString();
         load_data();
     }
     ui->listWidget->clear();
     ui->listWidget->addItem(directory.absolutePath());
+}
+void ViosGui::obj_browse_files(){
+    cout<<"hello";
+    QString obj_path;
+    bool obj_flag=0;
+    if(ui->obj_img_button->isChecked()){
+        directory.setNameFilters(image_filter);
+        obj_path = QFileDialog::getExistingDirectory(this, tr("Browse to add"), directory.path());
+        if (directory.entryList().size()>0)
+            obj_flag = 1;
+    }
+    else{
+        cout<<"obj_vid";
+        directory.setNameFilters(video_filter);
+        obj_path = QFileDialog::getOpenFileName(this, tr("Browse to add"), directory.path());
+        obj_flag = directory.match(video_filter,obj_path);
+    }
+    if (obj_path!="" && obj_flag){
+        directory.setPath(obj_path);
+        obj_input_path = obj_path.toStdString();
+        obj_load_data();
+    }
+    ui->obj_list->clear();
+    ui->obj_list->addItem(directory.absolutePath());
 }
