@@ -34,9 +34,9 @@ namespace face{
 	      MIN_EYE_DETECT_SIZE = 1;
 	      MAX_EYE_DETECT_SIZE = 60;
 	      EYE_DETECT_FACE_SIZE = 200;
-        eye_classifier_name = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+        eye_classifier_name = "/opt/ros/fuerte/share/OpenCV/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
         //eye_classifier_name = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_lefteye_2splits.xml";
-        face_classifier_name = "/home/rajeev/ProgramFiles/OpenCV-2.4.3/data/haarcascades/haarcascade_frontalface_alt.xml";
+        face_classifier_name = "/opt/ros/fuerte/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml";
         
         if (!face_classifier.load(face_classifier_name))
           cerr << "Face Detection Classifier cannot be loaded" << endl;

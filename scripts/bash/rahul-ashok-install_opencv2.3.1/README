@@ -1,0 +1,27 @@
+###############################################################################
+#    Shell script to install OpenCV 2.3.1 on Ubuntu 11.10.
+#    Correct usage:
+#    1. Open terminal in Ubuntu.
+#    2. Navigate to the folder in which this script is located.
+#    3. Type "sudo sh install-opencv2.3.1.sh"
+#    Installation will complete and then show you examples to check if
+#    it has been installed correctely.
+#
+#    Author: Rahul Ashok
+#    Georgia Institute of Technology
+#    rahul.ashok@cc.gatech.edu
+#    Copyright (C) 2012  Rahul Ashok
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.'
+###############################################################################
