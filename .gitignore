@@ -21,3 +21,4 @@ CMakeFiles
 *.ts
 *.pro.user*
 *fuse*
+*build*/
