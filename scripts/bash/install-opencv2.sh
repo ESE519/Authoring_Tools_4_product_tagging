@@ -1,9 +1,76 @@
+# ------------------------------------------------------------------------------
+#
+# OpenCV2 installation script
+# Usage : Type sh install-opencv2.sh -h for usage or help
+# Author : Rajeev Kumar Jeevagan
+# Last Modified : January 28, 2013
+#
+# --------------------- FreeBSD License ----------------------------------------
+# Copyright (c) <2013>, <Rajeev Kumar Jeevagan>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met: 
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer. 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution. 
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# The views and conclusions contained in the software and documentation are those
+# of the authors and should not be interpreted as representing official policies, 
+# either expressed or implied, of the FreeBSD Project.
+# -------------------------------------------------------------------------------
 #!/bin/bash
 if [ `id | cut -d= -f2 | cut -d\( -f1` = 0 ]
 then
   echo "Starting OpenCV-2.4.3 installation ..."
 else
-  echo "You dont have root permission. Try with sudo"
+  
+  if [ $1 =  ]
+  then  
+    echo "You dont have root permission. Try with sudo"
+    exit 0
+  elif [ `echo $1 | cut -d\- -f2` = "h" ]
+  then
+    echo
+    echo "------------------- OpenCV2 installation Usage ----------------------"
+    echo
+    echo "For installation always use it with administrative permission"
+    echo 
+    echo "Standard Usage:"
+    echo "sudo sh install-opencv2.sh" 
+    echo "This downloads and installs OpenCV2.4.3 and all dependencies by creating a ProgramFiles directory in your home folder and sets up .bashrc"
+    echo
+    echo "Options"
+    echo
+    echo "-h        Help or Usage instructions"
+    echo "-path     Installation path"
+    echo "-tbb      Compile OpenCV2 with tbb support"
+    echo "-qt       Compile OpenCV2 with qt support (currently not configured)"
+    echo "-eigen    Compile OpenCV2 with eigen support"
+    echo
+    echo "The script will take care of downloading these libraries for you"
+    echo
+    echo "---------------------------------------------------------------------" 
+    echo
+    exit 0
+  else
+    echo "You dont have root permission. Try with sudo"
+    exit 0
+  fi
 fi
 
 # Determine 64 bit or 32 bit system
