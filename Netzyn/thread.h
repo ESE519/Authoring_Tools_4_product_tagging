@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QDebug>
 #include <QTcpSocket>
+#include "dataparser.h"
 
 class Thread : public QThread
 {

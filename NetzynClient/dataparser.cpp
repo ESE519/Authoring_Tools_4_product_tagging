@@ -4,15 +4,49 @@ DataParser::DataParser()
 {
 }
 
-void DataParser::getData(char * cdata){
-    data = QString(cdata);
+DataParser::DataParser(char * inputData)
+{
+    data = QString(inputData);
+    byteData = QByteArray(inputData);
 }
 
-void DataParser::removeTerminators(){
+DataParser::DataParser(QByteArray inputData)
+{
+    char * tmp = inputData.data();
+    data = QString(tmp);
+    byteData = inputData;
+}
+
+DataParser::DataParser(QString inputData)
+{
+    data = inputData;
+    byteData = inputData.toAscii();
+}
+
+void DataParser::getData(char * inputData)
+{
+    data = QString(inputData);
+    byteData = QByteArray(inputData);
+}
+
+void DataParser::getData(QByteArray inputData)
+{
+    char * tmp = inputData.data();
+    data = QString(tmp);
+    byteData = inputData;
+}
+
+void DataParser::getData(QString inputData)
+{
+    data = inputData;
+    byteData = inputData.toAscii();
+}
+
+void DataParser::removeTerminator(){
     int n = data.size();
     int i;
     bool flag = FALSE;
-    for (i=n-1; i>=0; i++){
+    for (i=n-1; i>=0; i--){
         if (data[i] != '\r' && data[i] != '\n'){
             flag = TRUE;
             break;
@@ -33,5 +67,5 @@ void DataParser::serializeImage(QImage & image){
 void DataParser::deserializeImage(QImage & image){
     byteData = qUncompress(byteData);
     QBuffer buffer(&byteData);
-    image.load((&buffer, "PNG");
+    image.load(&buffer, "PNG");
 }

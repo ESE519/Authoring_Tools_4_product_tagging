@@ -1,5 +1,4 @@
 #include "thread.h"
-#include "dataparser.h"
 
 Thread::Thread(int ID, QObject *parent) :
     QThread(parent)
@@ -28,11 +27,18 @@ void Thread::run()
 void Thread::readyRead()
 {
     QByteArray request =socket->readAll();
-    char * cdata;
-    DataParser * parser = new DataParser();
-    qDebug() << socketDescriptor << "Data in" << request;
-    cdata = request.data();
-    parser->getData(cdata);
+    DataParser * parser = new DataParser(request);
+    parser->removeTerminator();
+    qDebug() << socketDescriptor << "Data in" << parser->data;
+    if (parser->data == "SEND"){
+        QImage img;
+        QImageReader reader("/home/rajeev/Desktop/image.jpg");
+        reader.read(&img);
+        parser->serializeImage(img);
+        qDebug() << parser->byteData.size();
+        socket->write(parser->byteData);
+        qDebug() << socketDescriptor << "Data written" << parser->byteData.size() << "bytes";
+    }
 }
 
 void Thread::disconnected()

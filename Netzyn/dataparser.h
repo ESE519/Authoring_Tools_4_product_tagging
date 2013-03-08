@@ -5,6 +5,7 @@
 #include <QBuffer>
 #include <QByteArray>
 #include <QImage>
+#include <QImageReader>
 
 class DataParser
 {
@@ -13,10 +14,15 @@ public:
     QByteArray byteData;
 public:
     DataParser();
-    void getData(char * cdata);
+    DataParser(char * inputData);
+    DataParser(QByteArray inputData);
+    DataParser(QString inputData);
+    void getData(char * inputData);
+    void getData(QByteArray inputData);
+    void getData(QString inputData);
     void serializeImage(QImage & image);
     void deserializeImage(QImage & image);
-    void removeTerminators();
+    void removeTerminator();
 };
 
 #endif // DATAPARSER_H
