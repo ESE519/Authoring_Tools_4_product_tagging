@@ -3,12 +3,18 @@
 
 #include <QTcpSocket>
 #include <QDebug>
-#include "dataparser.h"
+#include <QDataStream>
+#include <QImage>
+#include <QByteArray>
+#include <QBuffer>
+#include <QObject>
 
-class NetzynClient
+class NetzynClient : public QObject
 {
+    Q_OBJECT
 public:
-    NetzynClient();
+    explicit NetzynClient(QObject * parent = 0);
+
 signals:
     void error(QTcpSocket::SocketError socketError);
 
@@ -17,11 +23,22 @@ public:
     void disconnectFromServer();
     void sendToServer(QString &data);
     void receiveFromServer(QImage & image);
-    DataParser * parser;
+
+signals:
+    void updateScene();
+
+private slots:
+    void readyRead();
+    void disconnected();
 
 private:
     QTcpSocket * socket;
+    QDataStream in;
+    QByteArray inData;
+    qint64 packetByteCount;
 
+public:
+    QImage frame;
 };
 
 #endif // NETZYNCLIENT_H

@@ -18,10 +18,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     netzynserver.cpp \
-    thread.cpp \
-    dataparser.cpp
+    thread.cpp
 
 HEADERS += \
     netzynserver.h \
-    thread.h \
-    dataparser.h
+    thread.h

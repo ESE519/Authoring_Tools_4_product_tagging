@@ -4,7 +4,10 @@
 #include <QThread>
 #include <QDebug>
 #include <QTcpSocket>
-#include "dataparser.h"
+#include <QImage>
+#include <QImageReader>
+#include <QDataStream>
+#include <QBuffer>
 
 class Thread : public QThread
 {

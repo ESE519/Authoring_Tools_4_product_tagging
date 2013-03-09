@@ -26,6 +26,9 @@ void MainWindow::configureUI(){
     signalMapper->setMapping(ui->pushButtonDisconnect, QString::fromStdString("disconnect"));
     connect(signalMapper, SIGNAL(mapped(const QString &)),this, SIGNAL(mapPushButtons(const QString &)));
     connect(this,SIGNAL(mapPushButtons(const QString &)),this,SLOT(decodePushButton(const QString &)));
+
+    scene = new QGraphicsScene();
+    ui->graphicsView->setScene(scene);
 }
 
 void MainWindow::decodePushButton(const QString & pushButtonName){
@@ -34,6 +37,7 @@ void MainWindow::decodePushButton(const QString & pushButtonName){
         qDebug() << "Connect Button Pressed";
         newClient = new NetzynClient();
         newClient->connectToServer(ui->lineEditHostAddress->text(),qint16(ui->lineEditPort->text().toInt()));
+        connect(newClient,SIGNAL(updateScene()),this,SLOT(updateScene()));
         ui->lineEditStatus->setText("Connected");
         ui->lineEditStatus->displayText();
     }
@@ -49,6 +53,10 @@ void MainWindow::decodePushButton(const QString & pushButtonName){
         newClient->sendToServer(tmp);
         ui->lineEditStatus->setText("Sent");
         ui->lineEditStatus->displayText();
-        newClient->receiveFromServer(img);
     }
+}
+
+void MainWindow::updateScene(){
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(newClient->frame));
 }

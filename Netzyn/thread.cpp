@@ -26,18 +26,33 @@ void Thread::run()
 
 void Thread::readyRead()
 {
-    QByteArray request =socket->readAll();
-    DataParser * parser = new DataParser(request);
-    parser->removeTerminator();
-    qDebug() << socketDescriptor << "Data in" << parser->data;
-    if (parser->data == "SEND"){
+    qDebug() << socketDescriptor << socket->bytesAvailable() << " bytes available";
+    QByteArray request,response,imgByteArray;
+    QString inData;
+    QDataStream out(&response,QIODevice::WriteOnly);
+    request = socket->readAll();
+    QDataStream in(&request,QIODevice::ReadOnly);
+
+    in >> inData;
+    qDebug() << socketDescriptor << "Data in : " << inData;
+    if (inData == "SEND"){
+        // Read image;
         QImage img;
         QImageReader reader("/home/rajeev/Desktop/image.jpg");
         reader.read(&img);
-        parser->serializeImage(img);
-        qDebug() << parser->byteData.size();
-        socket->write(parser->byteData);
-        qDebug() << socketDescriptor << "Data written" << parser->byteData.size() << "bytes";
+
+        // Serialize Image
+        QBuffer buffer(&imgByteArray);
+        img.save(&buffer, "PNG");
+        imgByteArray = qCompress(imgByteArray);
+        //qDebug() << socketDescriptor << "Compressed Data : " << imgByteArray.toHex();
+
+        // Write Data
+        out << (qint64)imgByteArray.size();
+        out << imgByteArray;
+        socket->write(response);
+        qDebug() << socketDescriptor << "Image compressed QByteArray Size : " << imgByteArray.size() << endl;
+        qDebug() << socketDescriptor << "Data written" << response.size() << "bytes";
     }
 }
 

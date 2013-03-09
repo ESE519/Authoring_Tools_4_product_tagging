@@ -14,11 +14,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dataparser.cpp \
     netzynclient.cpp
 
 HEADERS  += mainwindow.h \
-    dataparser.h \
     netzynclient.h
 
 FORMS    += mainwindow.ui

@@ -15,6 +15,7 @@
 #include <QList>
 #include <QRadioButton>
 #include <QCheckBox>
+#include <QGraphicsScene>
 #include "netzynclient.h"
 
 namespace Ui {
@@ -30,6 +31,9 @@ private:
     QImage img;
 
 public:
+    QGraphicsScene *scene;
+
+public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void configureUI();
@@ -39,6 +43,7 @@ signals:
 
 private slots:
     void decodePushButton(const QString & pushButtonName);
+    void updateScene();
     
 private:
     Ui::MainWindow *ui;
