@@ -1,0 +1,11 @@
+#include "general.h"
+#include "face.h"
+
+using namespace cv;
+using namespace std;
+using namespace face;
+
+int main(int * argc, char* argv[]){
+  FaceDetect detector;
+  return 0;
+}

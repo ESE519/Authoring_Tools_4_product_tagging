@@ -40,7 +40,7 @@ void obj_detect(vector <Rect> &out, Mat &img,double scale = 1.1){
     pt2.y = (r->y + r->height)*scale;
     rectangle(img, pt1, pt2, CV_RGB(255,0,0), 1, 8, 0);
     tmp.x = pt1.x;
-    tmp.y = pt2.y;
+    tmp.y = pt1.y;
     tmp.width = r->width*scale;
     tmp.height = r->height*scale;
     out.push_back(tmp);
