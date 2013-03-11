@@ -25,13 +25,12 @@ void NetzynClient::sendToServer(QString & data){
 
 void NetzynClient::receiveFromServer(QImage & image){
     inData = inData.right(inData.size()-4);
-    qDebug() << "QByteArray Uncompress input Size : " << inData.size();
-    //qDebug() << "Compressed Data : " << inData.toHex();
     inData = qUncompress(inData);
+    qDebug() << "QByteArray Uncompress input Size : " << inData.size();
     QBuffer buffer(&inData);
     image.load(&buffer, "PNG");
     qDebug() << "Image Size : " << image.size();
-    emit updateScene();
+    //emit updateScene();
 }
 
 void NetzynClient::disconnectFromServer(){
@@ -59,7 +58,7 @@ void NetzynClient::readyRead(){
     qDebug() << "inData QByteArray size: " << inData.size();
     if (byteCount >= packetByteCount){
         qDebug() << "inData Size : " << inData.size();
-        receiveFromServer(frame);
+        receiveFromServer(overlayFrame);
         byteCount = 0;
         packetByteCount = 0;
     }

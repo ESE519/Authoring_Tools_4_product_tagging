@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = NetzynClient
 TEMPLATE = app
 
+INCLUDEPATH += `pkg-config opencv --cflags`
+
+LIBS += `pkg-config opencv --libs`
 
 SOURCES += main.cpp\
         mainwindow.cpp \

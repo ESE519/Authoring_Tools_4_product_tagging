@@ -51,8 +51,8 @@
      <rect>
       <x>30</x>
       <y>80</y>
-      <width>640</width>
-      <height>480</height>
+      <width>645</width>
+      <height>485</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -75,7 +75,7 @@
      <string>Connect</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonSend">
+   <widget class="QPushButton" name="pushButtonPlay">
     <property name="geometry">
      <rect>
       <x>470</x>
@@ -85,7 +85,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Send</string>
+     <string>Play</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonDisconnect">
@@ -148,6 +148,19 @@
       <width>113</width>
       <height>27</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxDetect">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>40</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detect</string>
     </property>
    </widget>
   </widget>

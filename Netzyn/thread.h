@@ -7,6 +7,10 @@
 #include <QImage>
 #include <QImageReader>
 #include <QDataStream>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QPainter>
+#include <QPen>
 #include <QBuffer>
 
 class Thread : public QThread
@@ -17,6 +21,7 @@ public:
     void run();
     QTcpSocket * socket;
     int socketDescriptor;
+    QDataStream in;
 
 signals:
     void error(QTcpSocket::SocketError socketError);

@@ -25,20 +25,20 @@ public:
     void receiveFromServer(QImage & image);
 
 signals:
-    void updateScene();
+    //void updateScene();
 
 private slots:
     void readyRead();
     void disconnected();
 
 private:
-    QTcpSocket * socket;
     QDataStream in;
     QByteArray inData;
     qint64 packetByteCount;
 
 public:
-    QImage frame;
+    QImage overlayFrame;
+    QTcpSocket * socket;
 };
 
 #endif // NETZYNCLIENT_H
