@@ -54,7 +54,6 @@ ViosGui::ViosGui(QWidget *parent) :
     active_pen.setColor(QColor(0,255,0));
     active_pen.setJoinStyle(Qt::RoundJoin);
     active_pen.setWidth(2);
-
     ui->mode_video->setChecked(1);
     ui->obj_video->setChecked(1);
     directory = QDir::current();
@@ -117,7 +116,7 @@ ViosGui::~ViosGui()
 
 void ViosGui::load_data()
 {
-    mouse_move=1;
+    mouse_move=3;
     if (ui->mode_video->isChecked()){
         cap.open(input_path);
         frame_count = cap.get(CV_CAP_PROP_FRAME_COUNT);
@@ -184,6 +183,7 @@ void ViosGui::update_image()
         frame_pos = cap.get(CV_CAP_PROP_POS_FRAMES);
         ui->horizontalSlider->setValue(frame_pos);
         image_qt = Mat2QImage(image_cv);
+        image_qt=image_qt.scaled(640,480);
         scene->clear();
         scene->addPixmap(QPixmap::fromImage(image_qt));
         num_face_detections = face_pos.size();
@@ -306,57 +306,61 @@ void ViosGui::browse_files(){
 
 void ViosGui::mousePressEvent(QMouseEvent *event)
 {
-    ViosGui::grabMouse();
     initial=event->pos();
-    if((initial.x()>=previous_point.x()) && (initial.x()<=last.x()) && (initial.y()>=previous_point.y()) && (initial.y()<=last.y()))
+    cout<<"X_offset: "<<X_offset<<"Y_offset: "<<Y_offset<<endl;
+    cout<<"x_initial: "<<initial.x()<<" y_initial: "<<initial.y()<<endl<<"range_x: "<<(frame_width+X_offset)<<"range_y: "<<(frame_height+Y_offset)<<endl;
+    if((initial.x()>=X_offset) && (initial.x()<=(X_offset+frame_width)) && (initial.y()>=Y_offset) && (initial.y()<=(Y_offset+frame_height)) )
     {
-        cout<<"x:"<<previous_point.x()<<"y"<<previous_point.y()<<endl;
-        detect.x=previous_point.x()-X_offset;
-        detect.y=previous_point.y()-Y_offset;
-        detect.width=last.x()-previous_point.x();
-        detect.height=last.y()-previous_point.y();
-        cout<<detect<<endl;
+        mouseclick=1;
+        ViosGui::grabMouse();
+    /*
+    cout<<"x:"<<initial.x()<<endl<<"y:"<<initial.y()<<endl;
+    mouseclick=1;
+    previous_point=initial;*/
+    }
+}
+void ViosGui::mouseMoveEvent(QMouseEvent *event)
+{
+    if((initial.x()>=X_offset) && (initial.x()<=(X_offset+frame_width)) && (initial.y()>=Y_offset) && (initial.y()<=(Y_offset+frame_height)) )
+    {
+       scene->removeItem(obj_rect);
+       current=event->pos();
+       obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(current.x()-initial.x()),(current.y()-initial.y()));
+       scene->addItem(obj_rect);
+     }
+}
+
+void ViosGui::mouseReleaseEvent(QMouseEvent *event)
+{
+    last=event->pos();
+    cout<<"x_last"<<last.x()<<" y_last"<<last.y()<<endl;
+    if((last.x()>=X_offset) && (last.x()<=(X_offset+frame_width)) && (last.y()>=Y_offset) && (last.y()<=(Y_offset+frame_height)))
+    {
+        cout<<"release"<<endl;
+        scene->removeItem(obj_rect);
+        mouseclick=0;
+    //scene->addRect(30,50,100,100);
+        obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(last.x()-initial.x()),(last.y()-initial.y()));
+        scene->addItem(obj_rect);
+        ViosGui::releaseMouse();
+
+    if((last.x()>=initial.x()) && (initial.y()<=last.y()))
+    {
+        cout<<"done release";
+        detect.x=initial.x()-X_offset;
+        detect.y=initial.y()-Y_offset;
+        detect.width=last.x()-initial.x();
+        detect.height=last.y()-initial.y();
         selected_image=image_cv(detect);
         select_qimage=Mat2QImage(selected_image);
         scene_detected->clear();
         scene_detected->addPixmap(QPixmap::fromImage(select_qimage));
     }
-    cout<<"x:"<<initial.x()<<endl<<"y:"<<initial.y()<<endl;
-    mouseclick=1;
-    previous_point=initial;
-}
-void ViosGui::mouseMoveEvent(QMouseEvent *event)
-{
-    if(mouseclick){
-        if(mouse_move)
-        {
-        mouse_move--;
-        }
-        else
-        scene->removeItem(obj_rect);
-        current=event->pos();
-        cout<<"hello-move"<<endl;
-        obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(current.x()-initial.x()),(current.y()-initial.y()));
-        scene->addItem(obj_rect);
-    }
-}
-
-void ViosGui::mouseReleaseEvent(QMouseEvent *event)
-{
-    scene->removeItem(obj_rect);
-    if(mouseclick)
-    last=event->pos();
-    mouseclick=0;
-    cout<<"release"<<endl;
-    //scene->addRect(30,50,100,100);
-    obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(last.x()-initial.x()),(last.y()-initial.y()));
-    scene->addItem(obj_rect);
-    ViosGui::releaseMouse();
-
+   }
 }
 /*void ViosGui::mouseDoubleClickEvent(QMouseEvent *event)
 {
     cout<<"double"<<endl;
-    double_click=event->pos();
+   // double_click=event->pos();
 
 }*/

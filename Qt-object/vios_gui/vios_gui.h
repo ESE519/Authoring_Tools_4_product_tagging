@@ -34,6 +34,7 @@ class ViosGui : public QMainWindow
     
 public:
     int video_step, image_step, frame_pos,frame_count,mouseclick,mouse_move,image_select_flag; //no of frame to be skipped
+    int frame_width,frame_height;
     Mat image_cv,selected_image;
     Rect detect;
     VideoCapture cap;
@@ -59,7 +60,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    //void mouseDoubleClickEvent(QMouseEvent *event);
+//    void mouseDoubleClickEvent(QMouseEvent *event);
     void update_image();
     void load_data();
 

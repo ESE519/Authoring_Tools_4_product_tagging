@@ -48,7 +48,7 @@ color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 
 </string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="face">
      <attribute name="title">
@@ -535,8 +535,8 @@ border-radius:5px;</string>
        <rect>
         <x>20</x>
         <y>50</y>
-        <width>640</width>
-        <height>480</height>
+        <width>645</width>
+        <height>485</height>
        </rect>
       </property>
       <property name="sizePolicy">
