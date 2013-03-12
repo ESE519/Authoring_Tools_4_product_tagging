@@ -97,15 +97,14 @@ ViosGui::ViosGui(QWidget *parent) :
     ui->graphicsView_frame->setScene(scene);
     ui->graphicsView_detection->setScene(scene_detected);
     ui->graphicsView_processed->setScene(scene_cropped);
+    obj_rect=new QGraphicsRectItem();
     vline1 = new QGraphicsLineItem();
     vline2 = new QGraphicsLineItem();
     hline = new QGraphicsLineItem();
-    obj_rect=new QGraphicsRectItem();
     vline1->setPen(default_pen);
     vline2->setPen(default_pen);
     hline->setPen(default_pen); 
     obj_rect->setPen(active_pen);
-    mouse_move=1;//to block delete item in mouse move for the first time
     mouseclick=0;
 }
 
@@ -116,7 +115,6 @@ ViosGui::~ViosGui()
 
 void ViosGui::load_data()
 {
-    mouse_move=3;
     if (ui->mode_video->isChecked()){
         cap.open(input_path);
         frame_count = cap.get(CV_CAP_PROP_FRAME_COUNT);
@@ -159,14 +157,12 @@ void ViosGui::menu_decode(const QString & button_name)
             step = -1;
     }
     frame_pos += step;
-    mouse_move=1;
-    scene->removeItem(obj_rect);
     update_image();
 }
 
 void ViosGui::update_image()
 {
-    if (frame_pos >= frame_count)
+        if (frame_pos >= frame_count)
         frame_pos = frame_count - 1;
     else if (frame_pos < 0)
         frame_pos = 0;
@@ -184,7 +180,6 @@ void ViosGui::update_image()
         ui->horizontalSlider->setValue(frame_pos);
         image_qt = Mat2QImage(image_cv);
         image_qt=image_qt.scaled(640,480);
-        scene->clear();
         scene->addPixmap(QPixmap::fromImage(image_qt));
         num_face_detections = face_pos.size();
 
@@ -227,6 +222,7 @@ void ViosGui::update_image()
         previous_point.setX(0);
         previous_point.setY(0);
     }
+    update_flag=TRUE;
 }
 
 void ViosGui::show_margins()
@@ -307,60 +303,45 @@ void ViosGui::browse_files(){
 void ViosGui::mousePressEvent(QMouseEvent *event)
 {
     initial=event->pos();
-    cout<<"X_offset: "<<X_offset<<"Y_offset: "<<Y_offset<<endl;
-    cout<<"x_initial: "<<initial.x()<<" y_initial: "<<initial.y()<<endl<<"range_x: "<<(frame_width+X_offset)<<"range_y: "<<(frame_height+Y_offset)<<endl;
     if((initial.x()>=X_offset) && (initial.x()<=(X_offset+frame_width)) && (initial.y()>=Y_offset) && (initial.y()<=(Y_offset+frame_height)) )
     {
-        mouseclick=1;
+        mouseclick=TRUE;
         ViosGui::grabMouse();
-    /*
-    cout<<"x:"<<initial.x()<<endl<<"y:"<<initial.y()<<endl;
-    mouseclick=1;
-    previous_point=initial;*/
     }
 }
 void ViosGui::mouseMoveEvent(QMouseEvent *event)
 {
-    if((initial.x()>=X_offset) && (initial.x()<=(X_offset+frame_width)) && (initial.y()>=Y_offset) && (initial.y()<=(Y_offset+frame_height)) )
+    current=event->pos();
+    if((current.x()>=X_offset) && (current.x()<=(X_offset+frame_width)) && (current.y()>=Y_offset) && (current.y()<=(Y_offset+frame_height)) )
+    if(mouseclick)
     {
        scene->removeItem(obj_rect);
-       current=event->pos();
        obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(current.x()-initial.x()),(current.y()-initial.y()));
        scene->addItem(obj_rect);
-     }
+    }
 }
 
 void ViosGui::mouseReleaseEvent(QMouseEvent *event)
 {
     last=event->pos();
-    cout<<"x_last"<<last.x()<<" y_last"<<last.y()<<endl;
-    if((last.x()>=X_offset) && (last.x()<=(X_offset+frame_width)) && (last.y()>=Y_offset) && (last.y()<=(Y_offset+frame_height)))
+     if((last.x()>=X_offset) && (last.x()<=(X_offset+frame_width)) && (last.y()>=Y_offset) && (last.y()<=(Y_offset+frame_height)))
     {
-        cout<<"release"<<endl;
+        mouseclick=FALSE;
         scene->removeItem(obj_rect);
-        mouseclick=0;
-    //scene->addRect(30,50,100,100);
         obj_rect->setRect(initial.x()-X_offset,initial.y()-Y_offset,(last.x()-initial.x()),(last.y()-initial.y()));
         scene->addItem(obj_rect);
-        ViosGui::releaseMouse();
 
     if((last.x()>=initial.x()) && (initial.y()<=last.y()))
     {
-        cout<<"done release";
         detect.x=initial.x()-X_offset;
         detect.y=initial.y()-Y_offset;
         detect.width=last.x()-initial.x();
         detect.height=last.y()-initial.y();
-        selected_image=image_cv(detect);
-        select_qimage=Mat2QImage(selected_image);
         scene_detected->clear();
-        scene_detected->addPixmap(QPixmap::fromImage(select_qimage));
+        mouse_detect=QPixmap::fromImage(image_qt);
+        mouse_detect=mouse_detect.copy(detect.x,detect.y,detect.width,detect.height);
+        scene_detected->addPixmap(mouse_detect);
     }
    }
+    ViosGui::releaseMouse();//to be outside because mouse move exceeding the boundaries can cause a grabbed mouse
 }
-/*void ViosGui::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    cout<<"double"<<endl;
-   // double_click=event->pos();
-
-}*/

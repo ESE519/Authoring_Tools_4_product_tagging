@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QObject>
 #include <QPen>
+#include <QDebug>
 #include <QGraphicsRectItem>
 #include <QList>
 #include "general.h"
@@ -21,6 +22,8 @@
 #define DEFAULT_VIDEO_STEP 10
 #define X_offset 23
 #define Y_offset 95
+#define frame_width 645
+#define frame_height 485
 
 using namespace face;
 
@@ -33,14 +36,14 @@ class ViosGui : public QMainWindow
     Q_OBJECT
     
 public:
-    int video_step, image_step, frame_pos,frame_count,mouseclick,mouse_move,image_select_flag; //no of frame to be skipped
-    int frame_width,frame_height;
+    int video_step, image_step, frame_pos,frame_count,mouse_act,image_select_flag; //no of frame to be skipped
+    bool mouseclick,update_flag;
     Mat image_cv,selected_image;
     Rect detect;
     VideoCapture cap;
     QImage image_qt,select_qimage;
     QPoint initial,last,current,previous_point;
-    QPixmap pixmap;
+    QPixmap pixmap,mouse_detect;
     QGraphicsScene *scene, *scene_detected, *scene_cropped,*obj_scene,*scene_obj_selected;
     QGraphicsLineItem * hline, * vline1, * vline2;
     QGraphicsRectItem *obj_rect;
@@ -60,7 +63,6 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-//    void mouseDoubleClickEvent(QMouseEvent *event);
     void update_image();
     void load_data();
 
