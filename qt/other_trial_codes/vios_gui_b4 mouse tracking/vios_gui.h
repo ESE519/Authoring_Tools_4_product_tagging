@@ -16,16 +16,11 @@
 #include <QList>
 #include <QRadioButton>
 #include <QCheckBox>
-#include <QMouseEvent>
 
 #include "general.h"
 #include "face.h"
 
 #define DEFAULT_VIDEO_STEP 10
-#define X_offset 23
-#define Y_offset 95
-#define frame_width 645
-#define frame_height 485
 
 using namespace face;
 
@@ -40,7 +35,7 @@ class ViosGui : public QMainWindow
 public:
     // C++ datatype members
     int video_step, image_step, frame_pos,frame_count, num_face_detections, detection_strength;
-    bool video_mode_load_flag, image_mode_load_flag, obj_image_load_flag, obj_video_load_flag, detection_flag, saved_flag,mouseclick;
+    bool video_mode_load_flag, image_mode_load_flag, obj_image_load_flag, obj_video_load_flag, detection_flag, saved_flag;
     string input_path, train_recognizer_file, class_label_file, train_path, junk_path, opencv_data_path;
     vector <int> train_num_label;
     vector <string> class_label, train_label;
@@ -56,7 +51,7 @@ public:
 
     // QT datatype members
     QImage image_qt;
-    QPixmap pixmap,mouse_detect;
+    QPixmap pixmap;
     QGraphicsScene *scene, *scene_detected, *scene_cropped,*scene_obj,*scene_cropped_obj;
     QGraphicsLineItem * hline, * vline1, * vline2;
     QPen default_pen, active_pen;
@@ -66,8 +61,6 @@ public:
     vector <QString> style;
     QRadioButton ** radio;
     QCheckBox ** check;
-    QGraphicsRectItem *obj_rect;
-    QPoint initial,last,current,previous_point;
 
 private:
     Ui::ViosGui *ui;
@@ -81,9 +74,6 @@ public:
     QImage Mat2QImage(const Mat& mat);
 
 private:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
     void obj_img_update();
     void update_image();
     void load_data();
