@@ -409,6 +409,7 @@ void ViosGui::train_gui(Mat & image_cv){
     ui->horizontalSlider->setValue(frame_pos);
     image_qt = Mat2QImage(image_cv);
     //scene->clear();
+    image_qt=image_qt.scaled(640,480);
     scene->addPixmap(QPixmap::fromImage(image_qt));
     num_face_detections = face_pos.size();
     if (ui->show_margins->checkState()){
