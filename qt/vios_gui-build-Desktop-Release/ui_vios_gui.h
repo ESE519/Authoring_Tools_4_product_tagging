@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vios_gui.ui'
 **
-** Created: Mon Dec 10 08:01:44 2012
+** Created: Tue Mar 12 00:29:58 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -79,6 +79,23 @@ public:
     QRadioButton *mode_video;
     QCheckBox *mode_recognize;
     QWidget *object;
+    QGraphicsView *obj_graphicsView;
+    QListWidget *obj_list;
+    QToolButton *obj_browse;
+    QGroupBox *detected_object;
+    QGraphicsView *detected_obj_view;
+    QPushButton *obj_add;
+    QPushButton *pushButton_2;
+    QTextEdit *avg_color;
+    QGroupBox *obj_menu;
+    QSlider *obj_slider;
+    QPushButton *obj_prev_skip;
+    QPushButton *obj_prev;
+    QPushButton *obj_fwd;
+    QPushButton *obj_fwd_skip;
+    QTextEdit *textEdit;
+    QRadioButton *obj_img_button;
+    QRadioButton *obj_vid_button;
     QMenuBar *menuBar;
     QMenu *menuViOS;
     QToolBar *mainToolBar;
@@ -303,6 +320,116 @@ public:
         tabwidget->addTab(face, QString());
         object = new QWidget();
         object->setObjectName(QString::fromUtf8("object"));
+        obj_graphicsView = new QGraphicsView(object);
+        obj_graphicsView->setObjectName(QString::fromUtf8("obj_graphicsView"));
+        obj_graphicsView->setGeometry(QRect(10, 50, 640, 480));
+        obj_graphicsView->setStyleSheet(QString::fromUtf8("border:frameless;\n"
+""));
+        obj_list = new QListWidget(object);
+        obj_list->setObjectName(QString::fromUtf8("obj_list"));
+        obj_list->setGeometry(QRect(10, 10, 431, 21));
+        obj_browse = new QToolButton(object);
+        obj_browse->setObjectName(QString::fromUtf8("obj_browse"));
+        obj_browse->setGeometry(QRect(450, 10, 23, 25));
+        detected_object = new QGroupBox(object);
+        detected_object->setObjectName(QString::fromUtf8("detected_object"));
+        detected_object->setGeometry(QRect(690, 50, 281, 351));
+        detected_object->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
+"	background-color: qlineargradient(spread:pad, x1:0.0238483, y1:0, x2:1, y2:1, stop:0 rgba(88, 95, 90, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"     border: 2px solid gray;\n"
+"     border-radius: 5px;\n"
+"     margin-top: 1ex; /* leave space at the top for the title */\n"
+" }\n"
+"\n"
+" QGroupBox::title {\n"
+"     subcontrol-origin: margin;\n"
+"     subcontrol-position: top center; /* position at the top center */\n"
+"     padding: 0 3px;\n"
+"     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                       stop: 0 #CECECE, stop: 1 #FFFFFF);\n"
+" }"));
+        detected_obj_view = new QGraphicsView(detected_object);
+        detected_obj_view->setObjectName(QString::fromUtf8("detected_obj_view"));
+        detected_obj_view->setGeometry(QRect(40, 30, 200, 200));
+        detected_obj_view->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+"\n"
+""));
+        obj_add = new QPushButton(detected_object);
+        obj_add->setObjectName(QString::fromUtf8("obj_add"));
+        obj_add->setGeometry(QRect(100, 230, 98, 27));
+        obj_add->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        pushButton_2 = new QPushButton(detected_object);
+        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        pushButton_2->setGeometry(QRect(20, 270, 161, 41));
+        pushButton_2->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        avg_color = new QTextEdit(detected_object);
+        avg_color->setObjectName(QString::fromUtf8("avg_color"));
+        avg_color->setGeometry(QRect(190, 270, 51, 41));
+        avg_color->setStyleSheet(QString::fromUtf8("background-color: rgb(245, 245, 245);\n"
+"border:2px solid gray;\n"
+"border-radius:5px;"));
+        obj_menu = new QGroupBox(object);
+        obj_menu->setObjectName(QString::fromUtf8("obj_menu"));
+        obj_menu->setGeometry(QRect(20, 550, 631, 91));
+        obj_menu->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
+"	background-color: qlineargradient(spread:pad, x1:0.0238483, y1:0, x2:1, y2:1, stop:0 rgba(88, 95, 90, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"     border: 2px solid gray;\n"
+"     border-radius: 5px;\n"
+"     margin-top: 1ex; /* leave space at the top for the title */\n"
+" }\n"
+"\n"
+" QGroupBox::title {\n"
+"     subcontrol-origin: margin;\n"
+"     subcontrol-position: top center; /* position at the top center */\n"
+"     padding: 0 3px;\n"
+"     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                       stop: 0 #CECECE, stop: 1 #FFFFFF);\n"
+" }"));
+        obj_slider = new QSlider(obj_menu);
+        obj_slider->setObjectName(QString::fromUtf8("obj_slider"));
+        obj_slider->setGeometry(QRect(10, 10, 601, 29));
+        obj_slider->setOrientation(Qt::Horizontal);
+        obj_prev_skip = new QPushButton(obj_menu);
+        obj_prev_skip->setObjectName(QString::fromUtf8("obj_prev_skip"));
+        obj_prev_skip->setGeometry(QRect(250, 50, 41, 27));
+        obj_prev_skip->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        obj_prev = new QPushButton(obj_menu);
+        obj_prev->setObjectName(QString::fromUtf8("obj_prev"));
+        obj_prev->setGeometry(QRect(350, 50, 41, 27));
+        obj_prev->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        obj_fwd = new QPushButton(obj_menu);
+        obj_fwd->setObjectName(QString::fromUtf8("obj_fwd"));
+        obj_fwd->setGeometry(QRect(200, 50, 41, 27));
+        obj_fwd->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        obj_fwd_skip = new QPushButton(obj_menu);
+        obj_fwd_skip->setObjectName(QString::fromUtf8("obj_fwd_skip"));
+        obj_fwd_skip->setGeometry(QRect(400, 50, 41, 27));
+        obj_fwd_skip->setStyleSheet(QString::fromUtf8("border:2px solid gray;\n"
+"border-radius: 5px;\n"
+""));
+        textEdit = new QTextEdit(obj_menu);
+        textEdit->setObjectName(QString::fromUtf8("textEdit"));
+        textEdit->setGeometry(QRect(300, 40, 41, 31));
+        textEdit->setStyleSheet(QString::fromUtf8("background-color: rgb(245, 245, 245);\n"
+"border: 2px solid gray;\n"
+"border-radius: 5px;"));
+        obj_img_button = new QRadioButton(object);
+        obj_img_button->setObjectName(QString::fromUtf8("obj_img_button"));
+        obj_img_button->setGeometry(QRect(490, 10, 71, 22));
+        obj_vid_button = new QRadioButton(object);
+        obj_vid_button->setObjectName(QString::fromUtf8("obj_vid_button"));
+        obj_vid_button->setGeometry(QRect(570, 10, 116, 22));
         tabwidget->addTab(object, QString());
         ViosGui->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(ViosGui);
@@ -322,7 +449,7 @@ public:
 
         retranslateUi(ViosGui);
 
-        tabwidget->setCurrentIndex(0);
+        tabwidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(ViosGui);
@@ -356,6 +483,17 @@ public:
         mode_video->setText(QApplication::translate("ViosGui", "Video", 0, QApplication::UnicodeUTF8));
         mode_recognize->setText(QApplication::translate("ViosGui", "Recognize", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(face), QApplication::translate("ViosGui", "Face Recognition", 0, QApplication::UnicodeUTF8));
+        obj_browse->setText(QApplication::translate("ViosGui", "...", 0, QApplication::UnicodeUTF8));
+        detected_object->setTitle(QApplication::translate("ViosGui", "Detected Object", 0, QApplication::UnicodeUTF8));
+        obj_add->setText(QApplication::translate("ViosGui", "Add Object", 0, QApplication::UnicodeUTF8));
+        pushButton_2->setText(QApplication::translate("ViosGui", "Get Average Color", 0, QApplication::UnicodeUTF8));
+        obj_menu->setTitle(QApplication::translate("ViosGui", "menu", 0, QApplication::UnicodeUTF8));
+        obj_prev_skip->setText(QApplication::translate("ViosGui", "<", 0, QApplication::UnicodeUTF8));
+        obj_prev->setText(QApplication::translate("ViosGui", ">", 0, QApplication::UnicodeUTF8));
+        obj_fwd->setText(QApplication::translate("ViosGui", "<<", 0, QApplication::UnicodeUTF8));
+        obj_fwd_skip->setText(QApplication::translate("ViosGui", ">>", 0, QApplication::UnicodeUTF8));
+        obj_img_button->setText(QApplication::translate("ViosGui", "image", 0, QApplication::UnicodeUTF8));
+        obj_vid_button->setText(QApplication::translate("ViosGui", "video", 0, QApplication::UnicodeUTF8));
         tabwidget->setTabText(tabwidget->indexOf(object), QApplication::translate("ViosGui", "Object Detection", 0, QApplication::UnicodeUTF8));
         menuViOS->setTitle(QApplication::translate("ViosGui", "ViOS", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
